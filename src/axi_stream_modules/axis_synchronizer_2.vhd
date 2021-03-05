@@ -99,7 +99,9 @@ begin
 		generic map (
 				DATA_WIDTH_0 => DATA_WIDTH_0,
 				DATA_WIDTH_1 => DATA_WIDTH_1,
-				LAST_POLICY  => LAST_POLICY
+				LAST_POLICY  => LAST_POLICY,
+				USER_WIDTH   => USER_WIDTH,
+				USER_POLICY  => USER_POLICY
 			)
 		port map (
 				clk => clk, rst => rst,
@@ -125,22 +127,32 @@ begin
 	end generate;
 	
 	
-	gen_pass_0  : if LAST_POLICY = PASS_ZERO generate	
+	gen_pass_l_0  : if LAST_POLICY = PASS_ZERO generate	
 		output_last <= output_last_0; 
+	end generate;
+	gen_pass_l_1  : if LAST_POLICY = PASS_ONE  generate	
+		output_last <= output_last_1; 
+	end generate;
+	gen_pass_l_or : if LAST_POLICY = OR_ALL    generate	
+		output_last <= output_last_0 or  output_last_1; 
+	end generate;
+	gen_pass_l_and: if LAST_POLICY = AND_ALL   generate	
+		output_last <= output_last_0 and output_last_1; 
+	end generate;
+	
+	gen_pass_u_0  : if USER_POLICY = PASS_ZERO generate	 
 		output_user <= output_user_0;
 	end generate;
-	gen_pass_1  : if LAST_POLICY = PASS_ONE  generate	
-		output_last <= output_last_1;
+	gen_pass_u_1  : if USER_POLICY = PASS_ONE  generate	
 		output_user <= output_user_1; 
 	end generate;
-	gen_pass_or : if LAST_POLICY = OR_ALL    generate	
-		output_last <= output_last_0 or  output_last_1; 
+	gen_pass_u_or : if USER_POLICY = OR_ALL    generate	 
 		output_user <= output_user_0 or  output_user_1;
 	end generate;
-	gen_pass_and: if LAST_POLICY = AND_ALL   generate	
-		output_last <= output_last_0 and output_last_1;
+	gen_pass_u_and: if USER_POLICY = AND_ALL   generate
 		output_user <= output_user_0 and output_user_1; 
 	end generate;
+		
 		
 	
 end Behavioral;
