@@ -34,7 +34,8 @@ entity AXIS_MULTIPLIER is
 		SIGNED_OP		: boolean := true;
 		LAST_POLICY		: am_last_policy_t := PASS_ZERO;
 		USER_WIDTH		: integer := 1;
-		USER_POLICY 	: am_last_policy_t := PASS_ZERO
+		USER_POLICY 	: am_last_policy_t := PASS_ZERO;
+		DESIRED_STAGES  : integer := 3
 	);
 	Port(
 		clk, rst: in std_logic;
@@ -156,7 +157,8 @@ begin
 	gen_lesseq_18x18: if MAX_INPUT_LEN <= 18 generate
 		mult_18x18: entity work.AXIS_MULT_COMPONENT_18x18
 			generic map (
-				USER_WIDTH => USER_WIDTH
+				USER_WIDTH => USER_WIDTH,
+				DESIRED_STAGES => DESIRED_STAGES
 			)
 			port map (
 				clk => clk, rst => rst,
@@ -178,7 +180,8 @@ begin
 	gen_lesseq_25x25: if MAX_INPUT_LEN > 18 and MAX_INPUT_LEN <= 25 generate
 		mult_25x25: entity work.AXIS_MULT_COMPONENT_25x25
 			generic map (
-				USER_WIDTH => USER_WIDTH
+				USER_WIDTH => USER_WIDTH,
+				DESIRED_STAGES => DESIRED_STAGES
 			)
 			port map (
 				clk => clk, rst => rst,

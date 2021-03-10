@@ -24,7 +24,8 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity AXIS_MULT_COMPONENT_25x25 is
 	Generic (
-		USER_WIDTH: integer := 1
+		USER_WIDTH: integer := 1;
+		DESIRED_STAGES: integer := 4
 	);
 	Port(
 		clk, rst: in std_logic;
@@ -62,6 +63,8 @@ architecture Behavioral of AXIS_MULT_COMPONENT_25x25 is
 	signal mult_stage_user: std_logic_vector(MULT_STAGES*USER_WIDTH - 1 downto 0);
 	
 begin
+	
+	assert DESIRED_STAGES = MULT_STAGES report "STAGES MUST BE MULT_STAGES" severity failure;
 
 	mult_enable <= '1' when mult_stage_occupancy(MULT_STAGES - 1) = '0' or output_ready = '1' else '0';
 	
