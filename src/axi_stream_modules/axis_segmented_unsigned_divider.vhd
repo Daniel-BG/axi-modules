@@ -37,12 +37,12 @@ entity axis_segmented_unsigned_divider is
 		axis_dividend_data		: in std_logic_vector(DIVIDEND_WIDTH - 1 downto 0);
 		axis_dividend_ready		: out std_logic;
 		axis_dividend_valid		: in std_logic;
-		axis_dividend_last		: in std_logic;
+		axis_dividend_last		: in std_logic := '0';
 		axis_dividend_user		: in std_logic_vector(USER_WIDTH - 1 downto 0) := (others => '0');
 		axis_divisor_data		: in std_logic_vector(DIVISOR_WIDTH - 1 downto 0);
 		axis_divisor_ready		: out std_logic;
 		axis_divisor_valid		: in std_logic;
-		axis_divisor_last		: in std_logic;
+		axis_divisor_last		: in std_logic := '0';
 		axis_divisor_user		: in std_logic_vector(USER_WIDTH - 1 downto 0) := (others => '0');
 		axis_output_quotient	: out std_logic_vector(DIVIDEND_WIDTH - 1 downto 0);
 		axis_output_remainder	: out std_logic_vector(DIVISOR_WIDTH - 1 downto 0);
@@ -60,11 +60,11 @@ architecture Behavioral of axis_segmented_unsigned_divider is
 	signal joint_divisor: std_logic_vector(DIVISOR_WIDTH - 1 downto 0);
 	signal joint_user: std_logic_vector(USER_WIDTH - 1 downto 0);
 	
-	constant STAGES: integer := DIVIDEND_WIDTH - DIVISOR_WIDTH + 1;
+	constant STAGES: integer := DIVIDEND_WIDTH;
 	
 	type dividend_stages_t 	is array(0 to STAGES-1) of unsigned(DIVIDEND_WIDTH - 1 downto 0);
 	type divisor_stages_t 	is array(0 to STAGES-1) of unsigned(DIVISOR_WIDTH - 1 downto 0); 
-	type shifted_divisor_t 	is array(0 to STAGES-1) of unsigned(DIVIDEND_WIDTH - 1 downto 0);
+	type shifted_divisor_t 	is array(0 to STAGES-1) of unsigned(DIVIDEND_WIDTH + DIVISOR_WIDTH - 2 downto 0);
 	type stage_full_t 		is array(0 to STAGES-1) of std_logic;
 	type user_stages_t 		is array(0 to STAGES-1) of std_logic_vector(USER_WIDTH - 1 downto 0);
 	signal divisor_stages	: divisor_stages_t;
@@ -124,7 +124,7 @@ begin
 	
 	gen_stages: for i in 0 to STAGES-1 generate
 		gen_zero: if i = 0 generate
-			shifted_divisor(0) <= shift_left(resize(unsigned(joint_divisor), DIVIDEND_WIDTH), DIVIDEND_WIDTH - DIVISOR_WIDTH);
+			shifted_divisor(0) <= shift_left(resize(unsigned(joint_divisor), DIVIDEND_WIDTH), STAGES - 1);
 			register_stage_0: process(clk, rst, pipeline_enable)
 			begin
 				if rst = '1' then
@@ -150,7 +150,7 @@ begin
 			end process;
 		end generate;
 		gen_nonzero: if i /= 0 generate
-			shifted_divisor(i) <= shift_left(resize(unsigned(divisor_stages(i-1)), DIVIDEND_WIDTH), DIVIDEND_WIDTH - DIVISOR_WIDTH - i);
+			shifted_divisor(i) <= shift_left(resize(unsigned(divisor_stages(i-1)), DIVIDEND_WIDTH), STAGES - 1 - i);
 			register_stage_i: process(clk, rst, pipeline_enable)
 			begin
 				if rst = '1' then
