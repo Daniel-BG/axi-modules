@@ -25,7 +25,8 @@ use IEEE.STD_LOGIC_1164.ALL;
 entity AXIS_FILTER is
 	Generic (
 		DATA_WIDTH: integer := 16;
-		ELIMINATE_ON_UP: boolean := true
+		ELIMINATE_ON_UP: boolean := true;
+		LATCH: boolean := true
 	);
 	Port (
 		clk, rst		: in 	std_logic;
@@ -55,7 +56,8 @@ begin
 	input_synchronizer: entity work.AXIS_SYNCHRONIZER_2 
 		Generic map (
 			DATA_WIDTH_0 => DATA_WIDTH,
-			DATA_WIDTH_1 => 1
+			DATA_WIDTH_1 => 1,
+			LATCH => LATCH
 		)
 		Port map(
 			clk => clk, rst => rst,
