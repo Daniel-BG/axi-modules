@@ -30,7 +30,7 @@ entity axis_conditioned_retrieval is
 	port ( 
 		clk, rst: in std_logic;
 		axis_in_cond: in std_logic; --output axis_in when cond = '1', otherwise output 0 for each 0 condition
-		axis_in_cond_user: in std_logic_vector(USER_WIDTH - 1 downto 0);
+		axis_in_cond_user: in std_logic_vector(USER_WIDTH - 1 downto 0) := (others => '0');
 		axis_in_cond_valid: in std_logic;
 		axis_in_cond_ready: out std_logic;
 		axis_in_data_d: in std_logic_vector(DATA_WIDTH - 1 downto 0);
@@ -67,7 +67,7 @@ begin
 	end process;
 	
 	
-	comb: process(state_curr, saved_cond, saved_user, axis_in_cond_valid, axis_out_data_ready, axis_in_data_d, axis_in_data_valid, axis_in_cond) 
+	comb: process(state_curr, saved_cond, saved_user, axis_in_cond_valid, axis_in_cond_user, axis_out_data_ready, axis_in_data_d, axis_in_data_valid, axis_in_cond) 
 	begin
 		state_next <= state_curr;	
 		saved_cond_next <= saved_cond;

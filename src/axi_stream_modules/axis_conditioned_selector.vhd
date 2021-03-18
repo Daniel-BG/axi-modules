@@ -29,7 +29,7 @@ entity axis_conditioned_selector is
 	);
 	port ( 
 		clk, rst: in std_logic;
-		axis_in_cond: in std_logic; --output axis_in when cond = '1', otherwise output 0 for each 0 condition
+		axis_in_cond: in std_logic; 
 		axis_in_cond_valid: in std_logic;
 		axis_in_cond_ready: out std_logic;
 		axis_in_data_0_d: in std_logic_vector(DATA_WIDTH - 1 downto 0);
