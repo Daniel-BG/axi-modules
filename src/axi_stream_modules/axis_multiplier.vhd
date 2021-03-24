@@ -26,16 +26,14 @@ use work.am_data_types.all;
 
 entity AXIS_MULTIPLIER is
 	Generic (
-		DATA_WIDTH_0: integer := 20;
-		DATA_WIDTH_1: integer := 20;
-		OUTPUT_WIDTH: integer := 32;
-		SIGN_EXTEND_0	: boolean := true;
-		SIGN_EXTEND_1	: boolean := true;
-		SIGNED_OP		: boolean := true;
-		LAST_POLICY		: am_last_policy_t := PASS_ZERO;
-		USER_WIDTH		: integer := 1;
-		USER_POLICY 	: am_last_policy_t := PASS_ZERO;
-		DESIRED_STAGES  : integer := 3
+		DATA_WIDTH_0		: integer := 20;
+		DATA_WIDTH_1		: integer := 20;
+		SIGNED_0			: boolean := false;
+		SIGNED_1			: boolean := false;
+		LAST_POLICY			: am_last_policy_t := PASS_ZERO;
+		USER_WIDTH			: integer := 1;
+		USER_POLICY 		: am_last_policy_t := PASS_ZERO;
+		STAGES_AFTER_SYNC	: integer := 3
 	);
 	Port(
 		clk, rst: in std_logic;
@@ -49,7 +47,7 @@ entity AXIS_MULTIPLIER is
 		input_1_ready	: out std_logic;
 		input_1_last    : in  std_logic := '0';
 		input_1_user    : in  std_logic_vector(USER_WIDTH - 1 downto 0) := (others => '0');
-		output_data		: out std_logic_vector(OUTPUT_WIDTH - 1 downto 0);
+		output_data		: out std_logic_vector(DATA_WIDTH_0 + DATA_WIDTH_1 - 1 downto 0);
 		output_valid	: out std_logic;
 		output_ready	: in  std_logic;
 		output_last		: out std_logic;
@@ -64,44 +62,12 @@ architecture Behavioral of AXIS_MULTIPLIER is
 	signal joint_last: std_logic;
 	signal joint_user: std_logic_vector(USER_WIDTH - 1 downto 0);
 	
-	function max(X, Y: integer; SIGNED_OP: boolean)
-		return integer is
-	begin
-		if X > Y then
-			if SIGNED_OP then
-				return X;
-			else
-				return X + 1; --need one extra to avoid sign bits
-			end if;
-		else
-			if SIGNED_OP then
-				return Y;
-			else
-				return Y + 1; --need one extra to avoid sign bits
-			end if;
-		end if;
-	end max;
+	type stage_user_t is array(0 to STAGES_AFTER_SYNC - 1) of std_logic_vector(USER_WIDTH - 1 downto 0);
+	signal stage_occ, stage_last: std_logic_vector(STAGES_AFTER_SYNC - 1 downto 0);
+	signal stage_user: stage_user_t;
 	
-	constant MAX_INPUT_LEN: integer := max(DATA_WIDTH_0, DATA_WIDTH_1, SIGNED_OP);
+	signal inner_mult_enable: std_logic;
 	
-	function to_closest_mult_size(X : integer)
-              return integer is
-	begin
-	  if X <= 18 then
-		return 18;
-	  elsif X <= 25 then
-		return 25;
-	  else
-	  	report "Size out of max bounds" severity error;
-	  	return 0;
-	  end if;
-	end to_closest_mult_size;
-
-	
-	constant INNER_DATA_WIDTH: integer := to_closest_mult_size(MAX_INPUT_LEN);
-	signal final_input_0, final_input_1: std_logic_vector(INNER_DATA_WIDTH - 1 downto 0);
-	
-	signal final_output: std_logic_vector(INNER_DATA_WIDTH*2 - 1 downto 0);
 begin
 
 	data_joiner: entity work.AXIS_SYNCHRONIZER_2
@@ -132,74 +98,47 @@ begin
 			output_user   => joint_user
 		);
 	
-	input_0_zero_extend: if not SIGN_EXTEND_0 generate
-		final_input_0 <= std_logic_vector(resize(unsigned(joint_data_0), INNER_DATA_WIDTH));
-	end generate;
-	input_0_sign_extend: if SIGN_EXTEND_0 generate
-		final_input_0 <= std_logic_vector(resize(signed(joint_data_0), INNER_DATA_WIDTH));
-	end generate;
-	input_1_zero_extend: if not SIGN_EXTEND_1 generate
-		final_input_1 <= std_logic_vector(resize(unsigned(joint_data_1), INNER_DATA_WIDTH));
-	end generate;
-	input_1_sign_extend: if SIGN_EXTEND_1 generate
-		final_input_1 <= std_logic_vector(resize(signed(joint_data_1), INNER_DATA_WIDTH));
-	end generate;
 	
-	gen_signed: if SIGNED_OP generate
-		output_data   <= std_logic_vector(resize(signed(final_output), OUTPUT_WIDTH));
-	end generate;
-	gen_unsigned: if not SIGNED_OP generate
-		output_data   <= std_logic_vector(resize(unsigned(final_output), OUTPUT_WIDTH));
-	end generate;
-	 
-
-	--use only 1 dsp block
-	gen_lesseq_18x18: if MAX_INPUT_LEN <= 18 generate
-		mult_18x18: entity work.AXIS_MULT_COMPONENT_18x18
-			generic map (
-				USER_WIDTH => USER_WIDTH,
-				DESIRED_STAGES => DESIRED_STAGES
-			)
-			port map (
-				clk => clk, rst => rst,
-				input_a => final_input_0,
-				input_b => final_input_1,
-				input_valid => joint_valid,
-				input_ready => joint_ready,
-				input_last  => joint_last,
-				input_user  => joint_user,
-				output_data => final_output,
-				output_valid => output_valid,
-				output_ready => output_ready,
-				output_last => output_last,
-				output_user => output_user
-			);
-	end generate;
+	inner_mult_enable <= '1' 
+		when output_ready = '1' 			--if anyone is around to read, we can always enable multiplication 
+		or   stage_occ(stage_occ'high) = '0'--we can also enable multiplication if the last stage isnt full
+		else '0';
+	joint_ready <= inner_mult_enable;
 	
-	--use only 2 dsp blocks
-	gen_lesseq_25x25: if MAX_INPUT_LEN > 18 and MAX_INPUT_LEN <= 25 generate
-		mult_25x25: entity work.AXIS_MULT_COMPONENT_25x25
-			generic map (
-				USER_WIDTH => USER_WIDTH,
-				DESIRED_STAGES => DESIRED_STAGES
-			)
-			port map (
-				clk => clk, rst => rst,
-				input_a => final_input_0,
-				input_b => final_input_1,
-				input_valid => joint_valid,
-				input_ready => joint_ready,
-				input_last  => joint_last,
-				input_user  => joint_user,
-				output_data => final_output,
-				output_valid => output_valid,
-				output_ready => output_ready,
-				output_last => output_last,
-				output_user => output_user
-			);
-	end generate;
-	
-	
+	seq: process(clk, rst) 
+	begin
+		if rst = '1' then
+			stage_occ <= (others => '0');
+		elsif rising_edge(clk) then
+			if inner_mult_enable = '1' then
+				stage_occ <= stage_occ(stage_occ'high - 1 downto 0) & joint_valid;
+				stage_last <= stage_last(stage_last'high - 1 downto 0) & joint_last;
+				for i in 1 to STAGES_AFTER_SYNC - 1 loop
+					stage_user(i) <= stage_user(i-1);
+				end loop;
+				stage_user(0) <= joint_user;
+			end if;
+		end if;
+	end process;
+		
+	inner_multiplier: entity work.generic_multiplier
+		generic map (
+			A_SIZE		=> DATA_WIDTH_0,
+			B_SIZE		=> DATA_WIDTH_1,
+			STAGES		=> STAGES_AFTER_SYNC,
+			SIGNED_A	=> SIGNED_0,
+			SIGNED_B 	=> SIGNED_1
+		)
+		Port map ( 
+			clk => clk, 
+			enable => inner_mult_enable,
+			in_a => joint_data_0,
+			in_b => joint_data_1,
+			prod => output_data
+		);
+	output_valid	<= stage_occ(STAGES_AFTER_SYNC - 1);
+	output_last		<= stage_last(STAGES_AFTER_SYNC - 1);
+	output_user		<= stage_user(STAGES_AFTER_SYNC - 1);
 		
 		
 end Behavioral;

@@ -54,7 +54,6 @@ entity axis_dotprod is
 end axis_dotprod;
 
 architecture Behavioral of axis_dotprod is
-	constant MULT_STAGES: integer := 4;
 	
 	signal input_a_readys, input_b_readys: std_logic_vector(VECTOR_LENGTH - 1 downto 0);
 	
@@ -77,14 +76,12 @@ begin
 			generic map (
 				DATA_WIDTH_0 => INPUT_A_DATA_WIDTH,
 				DATA_WIDTH_1 => INPUT_B_DATA_WIDTH,
-				OUTPUT_WIDTH => INPUT_A_DATA_WIDTH + INPUT_B_DATA_WIDTH,
-				SIGN_EXTEND_0=> true,
-				SIGN_EXTEND_1=> true,
-				SIGNED_OP	 => true,
+				SIGNED_0=> true,
+				SIGNED_1=> true,
 				LAST_POLICY  => LAST_POLICY,
 				USER_POLICY  => USER_POLICY,
 				USER_WIDTH   => USER_WIDTH,
-				DESIRED_STAGES=> MULT_STAGES
+				STAGES_AFTER_SYNC => 3
 			)
 			port map(
 				clk => clk, rst => rst,

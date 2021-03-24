@@ -25,13 +25,15 @@ use work.ccsds_data_structures.all;
 
 entity axis_conditioned_selector is
 	generic (
-		DATA_WIDTH: integer := 16
+		DATA_WIDTH: integer := 16;
+		USER_WIDTH: integer := 1
 	);
 	port ( 
 		clk, rst: in std_logic;
 		axis_in_cond: in std_logic; 
 		axis_in_cond_valid: in std_logic;
 		axis_in_cond_ready: out std_logic;
+		axis_in_cond_user: in std_logic_vector(USER_WIDTH - 1 downto 0) := (others => '0');
 		axis_in_data_0_d: in std_logic_vector(DATA_WIDTH - 1 downto 0);
 		axis_in_data_0_valid: in std_logic;
 		axis_in_data_0_ready: out std_logic;
@@ -40,7 +42,8 @@ entity axis_conditioned_selector is
 		axis_in_data_1_ready: out std_logic;
 		axis_out_data_d: out std_logic_vector(DATA_WIDTH - 1 downto 0);
 		axis_out_data_valid: out std_logic;
-		axis_out_data_ready: in std_logic
+		axis_out_data_ready: in std_logic;
+		axis_out_data_user: out std_logic_vector(USER_WIDTH - 1 downto 0)
 	);
 end axis_conditioned_selector;
 
@@ -50,6 +53,7 @@ architecture Behavioral of axis_conditioned_selector is
 	signal state_curr, state_next: state_t;
 	
 	signal saved_cond, saved_cond_next: std_logic;
+	signal saved_user, saved_user_next: std_logic_vector(USER_WIDTH - 1 downto 0);
 
 begin
 
@@ -58,17 +62,22 @@ begin
 		if rst = '1' then
 			state_curr <= IDLE;
 			saved_cond <= '0';
+			saved_user <= (others => '0');
 		elsif rising_edge(clk) then
 			state_curr <= state_next;
 			saved_cond <= saved_cond_next;
+			saved_user <= saved_user_next;
 		end if;
 	end process;
 	
+	axis_out_data_user <= saved_user;
 	
-	comb: process(state_curr, saved_cond, axis_in_cond_valid, axis_out_data_ready, axis_in_data_0_d, axis_in_data_1_d, axis_in_data_0_valid, axis_in_data_1_valid, axis_in_cond) 
+	comb: process(state_curr, saved_cond, saved_user, axis_in_cond_valid, axis_out_data_ready, axis_in_data_0_d, axis_in_data_1_d, axis_in_data_0_valid, axis_in_data_1_valid, axis_in_cond,
+		axis_in_cond_user) 
 	begin
 		state_next <= state_curr;	
 		saved_cond_next <= saved_cond;
+		saved_user_next <= saved_user;
 		axis_out_data_valid <= '0';
 		axis_out_data_d <= (others => '0');
 		axis_in_data_0_ready <= '0';
@@ -80,6 +89,7 @@ begin
 			if axis_in_cond_valid = '1' then
 				state_next <= COORD_READ;
 				saved_cond_next <= axis_in_cond;
+				saved_user_next <= axis_in_cond_user;
 			end if;
 		elsif state_curr = COORD_READ then
 			if saved_cond = '0' then --pipe first axis
@@ -91,6 +101,7 @@ begin
 					if axis_in_cond_valid = '1' then
 						state_next <= COORD_READ;
 						saved_cond_next <= axis_in_cond;
+						saved_user_next <= axis_in_cond_user;
 					else
 						state_next <= IDLE;
 					end if;
@@ -104,6 +115,7 @@ begin
 					if axis_in_cond_valid = '1' then
 						state_next <= COORD_READ;
 						saved_cond_next <= axis_in_cond;
+						saved_user_next <= axis_in_cond_user;
 					else
 						state_next <= IDLE;
 					end if;
