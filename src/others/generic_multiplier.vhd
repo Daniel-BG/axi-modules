@@ -30,11 +30,11 @@ use IEEE.NUMERIC_STD.ALL;
 
 entity generic_multiplier is
 	generic (
-		A_SIZE		: integer := 20;
-		B_SIZE		: integer := 20;
-		STAGES		: integer := 3;
-		SIGNED_A	: boolean := true;
-		SIGNED_B	: boolean := true
+		A_SIZE		: integer  := 5;
+		B_SIZE		: integer  := 5;
+		STAGES		: positive := 3;
+		SIGNED_A	: boolean  := true;
+		SIGNED_B	: boolean  := false
 	);
 	Port ( 
 		clk, enable: in std_logic;
@@ -45,21 +45,28 @@ entity generic_multiplier is
 end generic_multiplier;
 
 architecture Behavioral of generic_multiplier is
-	type prod_stages_t is array(0 to STAGES) of std_logic_vector(A_SIZE + B_SIZE - 1 downto 0);
+	signal input_reg_a: std_logic_vector(A_SIZE - 1 downto 0);
+	signal input_reg_b: std_logic_vector(B_SIZE - 1 downto 0);
+
+	constant OUTPUT_STAGES: integer := STAGES - 1;
+
+	type prod_stages_t is array(0 to OUTPUT_STAGES) of std_logic_vector(A_SIZE + B_SIZE - 1 downto 0);
 	
 	signal prod_stages: prod_stages_t;
+	attribute use_dsp : string;
+	attribute use_dsp of prod_stages : signal is "yes";
 begin
 	gen_s_s: if SIGNED_A and SIGNED_B generate
-		prod_stages(0) <= std_logic_vector(signed(in_a) * signed(in_b));
+		prod_stages(0) <= std_logic_vector(signed(input_reg_a) * signed(input_reg_b));
 	end generate;
 	gen_u_u: if not SIGNED_A and not SIGNED_B generate
-		prod_stages(0) <= std_logic_vector(unsigned(in_a) * unsigned(in_b));
+		prod_stages(0) <= std_logic_vector(unsigned(input_reg_a) * unsigned(input_reg_b));
 	end generate;
 	gen_s_u: if SIGNED_A and not SIGNED_B generate
-		prod_stages(0) <= std_logic_vector(resize(signed(in_a) * signed("0" & unsigned(in_b)), A_SIZE + B_SIZE));
+		prod_stages(0) <= std_logic_vector(signed(input_reg_a) * signed("0" & unsigned(input_reg_b)));
 	end generate;
 	gen_u_s: if not SIGNED_A and SIGNED_B generate
-		prod_stages(0) <= std_logic_vector(resize(signed("0" & unsigned(in_a)) * signed(in_b), A_SIZE + B_SIZE));
+		prod_stages(0) <= std_logic_vector(signed("0" & unsigned(input_reg_a)) * signed(input_reg_b));
 	end generate;
 	
 	
@@ -67,13 +74,15 @@ begin
 	begin
 		if rising_edge(clk) then
 			if enable = '1' then
-				for i in 1 to STAGES loop
+				input_reg_b <= in_b;
+				input_reg_a <= in_a;
+				for i in 1 to OUTPUT_STAGES loop
 					prod_stages(i) <= prod_stages(i-1);
 				end loop;
 			end if;
 		end if;
 	end process;
 	
-	prod <= prod_stages(STAGES);
+	prod <= prod_stages(OUTPUT_STAGES);
 	
 end Behavioral;

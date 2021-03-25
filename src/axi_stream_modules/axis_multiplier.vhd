@@ -26,9 +26,9 @@ use work.am_data_types.all;
 
 entity AXIS_MULTIPLIER is
 	Generic (
-		DATA_WIDTH_0		: integer := 20;
-		DATA_WIDTH_1		: integer := 20;
-		SIGNED_0			: boolean := false;
+		DATA_WIDTH_0		: integer := 38;
+		DATA_WIDTH_1		: integer := 5;
+		SIGNED_0			: boolean := true;
 		SIGNED_1			: boolean := false;
 		LAST_POLICY			: am_last_policy_t := PASS_ZERO;
 		USER_WIDTH			: integer := 1;
