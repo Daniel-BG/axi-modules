@@ -54,24 +54,55 @@ entity axis_dotprod is
 end axis_dotprod;
 
 architecture Behavioral of axis_dotprod is
-	
-	signal input_a_readys, input_b_readys: std_logic_vector(VECTOR_LENGTH - 1 downto 0);
+	signal axis_input_a_ready_buf, axis_input_b_ready_buf: std_logic;
+	signal transaction_at_a, transaction_at_b, transaction_at_end: std_logic;
 	
 	signal axis_mult_out_d: std_logic_vector((INPUT_A_DATA_WIDTH+INPUT_B_DATA_WIDTH)*VECTOR_LENGTH-1 downto 0);
-	signal axis_mult_out_ready, axis_mult_out_valid, axis_mult_out_last: std_logic_vector(VECTOR_LENGTH - 1 downto 0);
-	type mult_out_user_arr_t is array(0 to VECTOR_LENGTH - 1) of std_logic_vector(USER_WIDTH - 1 downto 0);
-	signal axis_mult_out_user: mult_out_user_arr_t;
+	signal axis_mult_out_ready, axis_mult_out_valid, axis_mult_out_last: std_logic;
 	
 	signal axis_latched_d: std_logic_vector(INPUT_A_DATA_WIDTH+INPUT_B_DATA_WIDTH+VECTOR_LENGTH_LOG - 1 downto 0);
 	signal axis_latched_last, axis_latched_ready, axis_latched_valid: std_logic;
 	signal axis_latched_user: std_logic_vector(USER_WIDTH - 1 downto 0);
 begin
-
+	axis_input_a_ready <= axis_input_a_ready_buf;
+	axis_input_b_ready <= axis_input_b_ready_buf;
+	--first multiplier
+	mult_i: entity work.AXIS_MULTIPLIER
+		generic map (
+			DATA_WIDTH_0 => INPUT_A_DATA_WIDTH,
+			DATA_WIDTH_1 => INPUT_B_DATA_WIDTH,
+			SIGNED_0=> true,
+			SIGNED_1=> true,
+			LAST_POLICY  => LAST_POLICY,
+			USER_POLICY  => USER_POLICY,
+			USER_WIDTH   => USER_WIDTH,
+			STAGES_AFTER_SYNC => 3
+		)
+		port map(
+			clk => clk, rst => rst,
+			input_0_data	=> axis_input_a_d(INPUT_A_DATA_WIDTH*(0+1) - 1 downto INPUT_A_DATA_WIDTH*0),
+			input_0_valid	=> axis_input_a_valid,
+			input_0_ready	=> axis_input_a_ready_buf,
+			input_0_last    => axis_input_a_last,
+			input_0_user    => axis_input_a_user,
+			input_1_data	=> axis_input_b_d(INPUT_B_DATA_WIDTH*(0+1) - 1 downto INPUT_B_DATA_WIDTH*0),
+			input_1_valid	=> axis_input_b_valid,
+			input_1_ready	=> axis_input_b_ready_buf,
+			input_1_last    => axis_input_b_last,
+			input_1_user    => axis_input_b_user,
+			output_data		=> axis_mult_out_d((INPUT_A_DATA_WIDTH+INPUT_B_DATA_WIDTH)*(0+1)-1 downto (INPUT_A_DATA_WIDTH+INPUT_B_DATA_WIDTH)*0),
+			output_valid	=> axis_latched_valid,
+			output_ready	=> axis_latched_ready,
+			output_last		=> axis_latched_last,
+			output_user 	=> axis_latched_user
+		);
+			
 	--generate multipliers
 	--take first as sync module since the rest are synchronized
-	axis_input_a_ready <= input_a_readys(0);
-	axis_input_b_ready <= input_b_readys(0);
-	gen_multipliers: for i in 0 to VECTOR_LENGTH-1 generate
+	transaction_at_a <= axis_input_a_valid and axis_input_a_ready_buf;
+	transaction_at_b <= axis_input_b_valid and axis_input_b_ready_buf;
+	transaction_at_end <= axis_latched_ready and axis_latched_valid;
+	gen_multipliers: for i in 1 to VECTOR_LENGTH-1 generate
 		mult_i: entity work.AXIS_MULTIPLIER
 			generic map (
 				DATA_WIDTH_0 => INPUT_A_DATA_WIDTH,
@@ -86,20 +117,20 @@ begin
 			port map(
 				clk => clk, rst => rst,
 				input_0_data	=> axis_input_a_d(INPUT_A_DATA_WIDTH*(i+1) - 1 downto INPUT_A_DATA_WIDTH*i),
-				input_0_valid	=> axis_input_a_valid,
-				input_0_ready	=> input_a_readys(i),
+				input_0_valid	=> transaction_at_a,
+				input_0_ready	=> open,
 				input_0_last    => axis_input_a_last,
 				input_0_user    => axis_input_a_user,
 				input_1_data	=> axis_input_b_d(INPUT_B_DATA_WIDTH*(i+1) - 1 downto INPUT_B_DATA_WIDTH*i),
-				input_1_valid	=> axis_input_b_valid,
-				input_1_ready	=> input_b_readys(i),
+				input_1_valid	=> transaction_at_b,
+				input_1_ready	=> open,
 				input_1_last    => axis_input_b_last,
 				input_1_user    => axis_input_b_user,
 				output_data		=> axis_mult_out_d((INPUT_A_DATA_WIDTH+INPUT_B_DATA_WIDTH)*(i+1)-1 downto (INPUT_A_DATA_WIDTH+INPUT_B_DATA_WIDTH)*i),
-				output_valid	=> axis_mult_out_valid(i),
-				output_ready	=> axis_mult_out_ready(i),
-				output_last		=> axis_mult_out_last(i),
-				output_user 	=> axis_mult_out_user(i)
+				output_valid	=> open,
+				output_ready	=> transaction_at_end,
+				output_last		=> open,
+				output_user 	=> open
 			);
 	end generate;
 	
@@ -114,11 +145,6 @@ begin
 			axis_in_d => axis_mult_out_d,
 			axis_out_d => axis_latched_d
 		);
-
-	axis_latched_valid <= axis_mult_out_valid(0);
-	axis_latched_last  <= axis_mult_out_last(0);
-	axis_latched_user  <= axis_mult_out_user(0);
-	axis_mult_out_ready <= (others => '1') when axis_latched_ready = '1' else (others => '0');
 
 
 	output_latch: entity work.AXIS_DATA_LATCH

@@ -30,9 +30,7 @@ entity AXIS_SYNCHRONIZER_LATCHED_2 is
 	Generic (
 		DATA_WIDTH_0: integer := 32;
 		DATA_WIDTH_1: integer := 32;
-		LAST_POLICY: am_last_policy_t := PASS_ZERO;
-		USER_WIDTH: integer := 1;
-		USER_POLICY: am_last_policy_t := PASS_ZERO
+		USER_WIDTH: integer := 1
 	);
 	Port (
 		clk, rst: in std_logic;
@@ -103,10 +101,11 @@ begin
 				buf_o_0_last <= '0';
 				buf_i_1_last <= '0';
 				buf_o_1_last <= '0';
-				buf_o_1_user <= (others => '0');
+				buf_i_0_user <= (others => '0');
 				buf_o_0_user <= (others => '0');
 				buf_i_1_user <= (others => '0');
-				buf_i_0_user <= (others => '0');
+				buf_o_1_user <= (others => '0');
+				
 			else
 				--if reading from output
 				if output_valid_in = '1' and output_ready = '1' then
@@ -133,7 +132,7 @@ begin
 					else --shift first value
 						buf_o_1 <= buf_i_1;
 						buf_o_1_last <= buf_i_1_last;
-						buf_o_1_user <= buf_o_1_user;
+						buf_o_1_user <= buf_i_1_user;
 						buf_o_1_full <= buf_i_1_full;
 						--buf_i_1 <= (others => '0');
 						buf_i_1_full <= '0';

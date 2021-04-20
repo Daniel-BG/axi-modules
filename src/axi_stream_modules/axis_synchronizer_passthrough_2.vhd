@@ -28,9 +28,7 @@ entity AXIS_SYNCHRONIZER_PASSTHROUGH_2 is
 	Generic (
 		DATA_WIDTH_0: integer := 32;
 		DATA_WIDTH_1: integer := 32;
-		LAST_POLICY: am_last_policy_t := PASS_ZERO;
-		USER_WIDTH: integer := 1;
-		USER_POLICY: am_last_policy_t := PASS_ZERO
+		USER_WIDTH: integer := 1
 	);
 	Port (
 		clk, rst: in std_logic;

@@ -124,54 +124,63 @@ begin
 	
 	gen_stages: for i in 0 to STAGES-1 generate
 		gen_zero: if i = 0 generate
-			shifted_divisor(0) <= shift_left(resize(unsigned(joint_divisor), DIVIDEND_WIDTH), STAGES - 1);
+			shifted_divisor(0) <= shift_left(resize(unsigned(joint_divisor), DIVIDEND_WIDTH + DIVISOR_WIDTH - 1), STAGES - 1);
 			register_stage_0: process(clk, rst, pipeline_enable)
 			begin
-				if rst = '1' then
-					dividend_stages(0) 	<= (others => '0');
-					divisor_stages(0)  	<= (others => '0');
-					quotient_stages(0) 	<= (others => '0');
-					stage_full(0) 	  	<= '0';
-					stage_last(0) 		<= '0';
-					stage_user(0) 		<= (others => '0');
-				elsif rising_edge(clk) and pipeline_enable = '1' then
-					if unsigned(joint_dividend) < shifted_divisor(0) then --not substracting
-						dividend_stages(0) <= unsigned(joint_dividend); 
-						quotient_stages(0) <= (others => '0');
-					else --substracting
-						dividend_stages(0) <= unsigned(joint_dividend) - shifted_divisor(0);
-						quotient_stages(0) <= to_unsigned(2**(STAGES-1), DIVIDEND_WIDTH);
+				if rising_edge(clk) then
+					if rst = '1' then
+						dividend_stages(0) 	<= (others => '0');
+						divisor_stages(0)  	<= (others => '0');
+						quotient_stages(0) 	<= (others => '0');
+						stage_full(0) 	  	<= '0';
+						stage_last(0) 		<= '0';
+						stage_user(0) 		<= (others => '0');
+					elsif pipeline_enable = '1' 
+						if unsigned(joint_dividend) < shifted_divisor(0) then --not substracting
+							dividend_stages(0) <= unsigned(joint_dividend); 
+							quotient_stages(0) <= (others => '0');
+						else --substracting
+							dividend_stages(0) <= unsigned(joint_dividend) - resize(shifted_divisor(0), DIVIDEND_WIDTH);
+							quotient_stages(0) <= to_unsigned(2**(STAGES-1), DIVIDEND_WIDTH);
+						end if;
+						divisor_stages(0) <= unsigned(joint_divisor);
+						stage_full(0) <= joint_valid;
+						stage_last(0) <= joint_last;
+						stage_user(0) <= joint_user;
 					end if;
-					divisor_stages(0) <= unsigned(joint_divisor);
-					stage_full(0) <= joint_valid;
-					stage_last(0) <= joint_last;
-					stage_user(0) <= joint_user;
 				end if;
 			end process;
 		end generate;
 		gen_nonzero: if i /= 0 generate
-			shifted_divisor(i) <= shift_left(resize(unsigned(divisor_stages(i-1)), DIVIDEND_WIDTH), STAGES - 1 - i);
+			gen_middle: if i < STAGES - 1 generate
+				shifted_divisor(i) <= shift_left(resize(unsigned(divisor_stages(i-1)), DIVIDEND_WIDTH + DIVISOR_WIDTH - 1), STAGES - 1 - i);
+			end generate;
+			gen_last: if i = STAGES - 1 generate
+				shifted_divisor(i) <= resize(unsigned(divisor_stages(i-1)), DIVIDEND_WIDTH + DIVISOR_WIDTH - 1);
+			end generate;
 			register_stage_i: process(clk, rst, pipeline_enable)
 			begin
-				if rst = '1' then
-					dividend_stages(i) 	<= (others => '0');
-					divisor_stages(i)  	<= (others => '0');
-					quotient_stages(i) 	<= (others => '0');
-					stage_full(i) 	  	<= '0';
-					stage_last(i) 		<= '0';
-					stage_user(i) 		<= (others => '0');
-				elsif rising_edge(clk) and pipeline_enable = '1' then
-					if unsigned(dividend_stages(i-1)) < shifted_divisor(i) then --not substracting
-						dividend_stages(i) <= dividend_stages(i-1);
-						quotient_stages(i) <= quotient_stages(i-1); 
-					else --substracting
-						dividend_stages(i) <= dividend_stages(i-1) - shifted_divisor(i);
-						quotient_stages(i) <= quotient_stages(i-1) + to_unsigned(2**(STAGES-1-i), DIVIDEND_WIDTH);
+				if rising_edge(clk) then
+					if rst = '1' then
+						dividend_stages(i) 	<= (others => '0');
+						divisor_stages(i)  	<= (others => '0');
+						quotient_stages(i) 	<= (others => '0');
+						stage_full(i) 	  	<= '0';
+						stage_last(i) 		<= '0';
+						stage_user(i) 		<= (others => '0');
+					elsif pipeline_enable = '1' then
+						if unsigned(dividend_stages(i-1)) < shifted_divisor(i) then --not substracting
+							dividend_stages(i) <= dividend_stages(i-1);
+							quotient_stages(i) <= quotient_stages(i-1); 
+						else --substracting
+							dividend_stages(i) <= dividend_stages(i-1) - resize(shifted_divisor(i), DIVIDEND_WIDTH);
+							quotient_stages(i) <= quotient_stages(i-1) + to_unsigned(2**(STAGES-1-i), DIVIDEND_WIDTH);
+						end if;
+						divisor_stages(i) 	<= divisor_stages(i-1); --keep same value
+						stage_full(i) 	  	<= stage_full(i-1);
+						stage_last(i) 		<= stage_last(i-1);
+						stage_user(i) 		<= stage_user(i-1);
 					end if;
-					divisor_stages(i) 	<= divisor_stages(i-1); --keep same value
-					stage_full(i) 	  	<= stage_full(i-1);
-					stage_last(i) 		<= stage_last(i-1);
-					stage_user(i) 		<= stage_user(i-1);
 				end if;
 			end process;
 		end generate;

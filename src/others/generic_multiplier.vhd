@@ -57,16 +57,16 @@ architecture Behavioral of generic_multiplier is
 	attribute use_dsp of prod_stages : signal is "yes";
 begin
 	gen_s_s: if SIGNED_A and SIGNED_B generate
-		prod_stages(0) <= std_logic_vector(signed(input_reg_a) * signed(input_reg_b));
+		prod_stages(0) <= std_logic_vector(resize(resize(signed(input_reg_a), A_SIZE + B_SIZE) * resize(signed(input_reg_b), A_SIZE + B_SIZE), A_SIZE + B_SIZE));
 	end generate;
 	gen_u_u: if not SIGNED_A and not SIGNED_B generate
-		prod_stages(0) <= std_logic_vector(unsigned(input_reg_a) * unsigned(input_reg_b));
+		prod_stages(0) <= std_logic_vector(resize(resize(unsigned(input_reg_a), A_SIZE + B_SIZE) * resize(unsigned(input_reg_b), A_SIZE + B_SIZE), A_SIZE + B_SIZE));
 	end generate;
 	gen_s_u: if SIGNED_A and not SIGNED_B generate
-		prod_stages(0) <= std_logic_vector(signed(input_reg_a) * signed("0" & unsigned(input_reg_b)));
+		prod_stages(0) <= std_logic_vector(resize(resize(signed(input_reg_a), A_SIZE + B_SIZE) * resize(signed("0" & unsigned(input_reg_b)), A_SIZE + B_SIZE), A_SIZE + B_SIZE));
 	end generate;
 	gen_u_s: if not SIGNED_A and SIGNED_B generate
-		prod_stages(0) <= std_logic_vector(signed("0" & unsigned(input_reg_a)) * signed(input_reg_b));
+		prod_stages(0) <= std_logic_vector(resize(resize(signed("0" & unsigned(input_reg_a)), A_SIZE + B_SIZE) * resize(signed(input_reg_b), A_SIZE + B_SIZE), A_SIZE + B_SIZE));
 	end generate;
 	
 	

@@ -59,14 +59,16 @@ begin
 
 	seq: process(clk, rst)
 	begin
-		if rst = '1' then
-			state_curr <= IDLE;
-			saved_cond <= '0';
-			saved_user <= (others => '0');
-		elsif rising_edge(clk) then
-			state_curr <= state_next;
-			saved_cond <= saved_cond_next;
-			saved_user <= saved_user_next;
+		if rising_edge(clk) then
+			if rst = '1' then
+				state_curr <= IDLE;
+				saved_cond <= '0';
+				saved_user <= (others => '0');
+			else
+				state_curr <= state_next;
+				saved_cond <= saved_cond_next;
+				saved_user <= saved_user_next;
+			end if;
 		end if;
 	end process;
 	

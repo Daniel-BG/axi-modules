@@ -1,0 +1,877 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"ofifoal",
+				"ofifo_almost_full_pre"
+			],
+			[
+				"clk",
+				"axi_clk"
+			],
+			[
+				"BYL",
+				"D_AXIS_DATA_BYTE_LOG"
+			],
+			[
+				"DA",
+				"D_AXIS_DATA_BYTE_LOG"
+			],
+			[
+				"DBY",
+				"D_AXIS_DATA_BYTE_LOG"
+			],
+			[
+				"BY",
+				"M_AXI_DATA_BYTE_LOG"
+			],
+			[
+				"mrs",
+				"mem_read_start_ready"
+			],
+			[
+				"ME",
+				"MEM_READ_IDLE"
+			],
+			[
+				"stdl",
+				"std_logic_vector"
+			],
+			[
+				"oubuffer_next",
+				"output_user_buffer_next"
+			],
+			[
+				"oocc",
+				"output_buffer_occ_next"
+			],
+			[
+				"oubufnext",
+				"output_user_buffer_next"
+			],
+			[
+				"oubuffer",
+				"output_user_buffer"
+			],
+			[
+				"if",
+				"if\tif"
+			],
+			[
+				"P",
+				"PARALLEL_SIGNAL_COUNT"
+			],
+			[
+				"en",
+				"entarch\tentity architecture"
+			],
+			[
+				"prefdl",
+				"prediction_first_last_data"
+			],
+			[
+				"prefir",
+				"prediction_first_last"
+			],
+			[
+				"addit",
+				"addition"
+			],
+			[
+				"additio",
+				"addition_prescaled"
+			],
+			[
+				"x20",
+				"x_2_0_last_b_stdlv"
+			],
+			[
+				"nthb",
+				"nthband_pred_check_xmean_nonfirst"
+			],
+			[
+				"alread",
+				"alpha_ready"
+			],
+			[
+				"xha1bl",
+				"xhat_1_buf_last_s"
+			],
+			[
+				"d_flag_2_",
+				"d_flag_2_valid"
+			],
+			[
+				"nonlast_valid",
+				"xmean_nonlast_2_valid"
+			],
+			[
+				"x_2_2_las_b",
+				"x_2_2_last_b_stdlv"
+			],
+			[
+				"xmnlva",
+				"xmean_nonlast_0_valid"
+			],
+			[
+				"ALP",
+				"ALPHA_CALC"
+			],
+			[
+				"x2",
+				"x_2_last_s"
+			],
+			[
+				"xmean",
+				"xmean_data"
+			],
+			[
+				"xhatl",
+				"xhat_last_r"
+			],
+			[
+				"ra",
+				"raw_err_valid"
+			],
+			[
+				"dto",
+				"downto"
+			],
+			[
+				"B",
+				"BINARY_QUANTIZER"
+			],
+			[
+				"cfg",
+				"cfg_quant_shift"
+			],
+			[
+				"b1se",
+				"buf_1_some_empty"
+			],
+			[
+				"b0se",
+				"buf_0_some_empty"
+			],
+			[
+				"need_more_cy",
+				"need_more_cycles_next"
+			],
+			[
+				"shifted_",
+				"shifted_ready"
+			],
+			[
+				"df",
+				"data_buf_full_next"
+			],
+			[
+				"or",
+				"output_ready"
+			],
+			[
+				"csaxiregcncll",
+				"C_S_AXI_REG_CNCLKL_LOCALADDR"
+			],
+			[
+				"saxrcnc",
+				"s_axi_reg_cnclk"
+			],
+			[
+				"DDr3",
+				"DDR3_AXI_DATA_BYTES_LOG"
+			],
+			[
+				"coreinl",
+				"core_input_last_i"
+			],
+			[
+				"lcpl",
+				"lcplc_clk"
+			],
+			[
+				"AL",
+				"ALPHA_WIDTH"
+			],
+			[
+				"saregbck",
+				"s_axi_reg_bcklin"
+			],
+			[
+				"CSARB",
+				"C_S_AXI_REG_BCKSMP_LOCALADDR"
+			],
+			[
+				"CSARBC",
+				"C_S_AXI_REG_BCKLIN_LOCALADDR"
+			],
+			[
+				"CSARBCL",
+				"C_S_AXI_REG_BCKSMP_LOCALADDR"
+			],
+			[
+				"corein",
+				"core_input_last_b"
+			],
+			[
+				"confi",
+				"config_block_samples"
+			],
+			[
+				"roli",
+				"raw_output_last_i"
+			],
+			[
+				"rolb",
+				"raw_output_last_b"
+			],
+			[
+				"rols",
+				"raw_output_last_s"
+			],
+			[
+				"rolr",
+				"raw_output_last_r"
+			],
+			[
+				"bsm",
+				"block_max_sample_curr"
+			],
+			[
+				"block",
+				"block_line_next"
+			],
+			[
+				"std",
+				"std_logic_vector"
+			],
+			[
+				"LATCH",
+				"LATCH_INPUT"
+			],
+			[
+				"incri",
+				"incr_image_line"
+			],
+			[
+				"flasb",
+				"flag_last_image_band"
+			],
+			[
+				"lastimban",
+				"last_image_line_boundary"
+			],
+			[
+				"cimsa",
+				"config_image_samples"
+			],
+			[
+				"LC",
+				"LCPLC_DATA_BYTES_LOG"
+			],
+			[
+				"AXIQ",
+				"AXI_QOS_WIDTH"
+			],
+			[
+				"AXI_BU",
+				"AXI_BURST_WIDTH"
+			],
+			[
+				"s_axi_reg_st",
+				"s_axi_reg_staddr"
+			],
+			[
+				"ddrrea",
+				"ddr_read_state_curr"
+			],
+			[
+				"i",
+				"ig\tif condition generate"
+			],
+			[
+				"C",
+				"CONTROL_START"
+			],
+			[
+				"csrstat",
+				"control_slave_read_state_t"
+			],
+			[
+				"c_s_w_st",
+				"c_s_w_state_next"
+			],
+			[
+				"RESPO",
+				"SEND_RESPONSE"
+			],
+			[
+				"AWA",
+				"AWAIT_ADDR"
+			],
+			[
+				"buf0",
+				"buf0_full"
+			],
+			[
+				"firstlac",
+				"first_latch_seq"
+			],
+			[
+				"ou",
+				"output_ready"
+			],
+			[
+				"dl",
+				"data_up_latch_enable"
+			],
+			[
+				"fifoo",
+				"fifo_out_data"
+			],
+			[
+				"dup",
+				"data_up_latch_enable"
+			],
+			[
+				"xlas",
+				"x_last_s"
+			],
+			[
+				"o",
+				"output_last"
+			],
+			[
+				"outl",
+				"output_valid"
+			],
+			[
+				"std_",
+				"std_logic_vector"
+			],
+			[
+				"bufus",
+				"buf_i_0_user"
+			],
+			[
+				"ou0",
+				"output_user_0"
+			],
+			[
+				"ouser",
+				"output_user_0"
+			],
+			[
+				"inptu",
+				"input_1_valid"
+			],
+			[
+				"N",
+				"NUMBER_OF_PORTS"
+			],
+			[
+				"sdir",
+				"synced_divisor_buf_next"
+			],
+			[
+				"sdinb",
+				"synced_dividend_buf_next"
+			],
+			[
+				"syd",
+				"synced_dividend"
+			],
+			[
+				"sr",
+				"synced_ready"
+			],
+			[
+				"CL",
+				"MAX_COUNT_LOG"
+			],
+			[
+				"crea",
+				"count_ready"
+			],
+			[
+				"DW",
+				"DATA_WIDTH"
+			],
+			[
+				"fd",
+				"flag_data"
+			],
+			[
+				"cone",
+				"control_end_image"
+			],
+			[
+				"es1l",
+				"ehat_splitter_1_last_s"
+			],
+			[
+				"last",
+				"input_last_buff"
+			],
+			[
+				"i1",
+				"input_1_data"
+			],
+			[
+				"pl",
+				"packer_length"
+			],
+			[
+				"plas",
+				"packer_last"
+			],
+			[
+				"contro",
+				"control_ready"
+			],
+			[
+				"dATA",
+				"DATA_WIDTH"
+			],
+			[
+				"syxa",
+				"sync_xmean_alpha_xmean"
+			],
+			[
+				"el",
+				"ELIMINATE_ON_UP"
+			],
+			[
+				"sm",
+				"sync_merr_kj_kj"
+			],
+			[
+				"di",
+				"diverter_0_ready"
+			],
+			[
+				"els",
+				"ehat_last_s"
+			],
+			[
+				"ehl",
+				"ehat_last_i"
+			],
+			[
+				"ACC_WI",
+				"ACC_WINDOW_M1_BITS"
+			],
+			[
+				"STD_L",
+				"STD_LOGIC_VECTOR"
+			],
+			[
+				"esl",
+				"error_splitter_ready_0"
+			],
+			[
+				"DATA_W",
+				"DATA_WIDTH"
+			],
+			[
+				"result",
+				"result_next"
+			],
+			[
+				"DI",
+				"DIVIDEND_SIGNED"
+			],
+			[
+				"sta",
+				"state_next"
+			],
+			[
+				"disrb",
+				"divisor_buf"
+			],
+			[
+				"IDNW",
+				"INNER_DIVIDEND_WIDTH"
+			],
+			[
+				"dinb",
+				"dividend_buf"
+			],
+			[
+				"std_l",
+				"std_logic"
+			],
+			[
+				"DIVISOR",
+				"DIVISOR_WIDTH"
+			],
+			[
+				"POI",
+				"POI_VARIANCE"
+			],
+			[
+				"PO",
+				"POI_TYPES"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "src/axi_lite_modules/axi_to_axis_read_bridge.vhd",
+			"settings":
+			{
+				"buffer_size": 11669,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"asm",
+				"Set Syntax: ARM Assembly"
+			],
+			[
+				"ass",
+				"Set Syntax: ARM Assembly"
+			],
+			[
+				"package",
+				"Package Control: Install Package"
+			],
+			[
+				"package m",
+				"Package Control: Remove Package"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"install ",
+				"Package Control: Install Package"
+			],
+			[
+				"insta",
+				"Install Package Control"
+			]
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/C/Users/Daniel/Repositorios/axi-modules",
+		"/C/Users/Daniel/Repositorios/axi-modules/src",
+		"/C/Users/Daniel/Repositorios/axi-modules/src/axi_lite_modules"
+	],
+	"file_history":
+	[
+		"/G/Mi unidad/Personal/Doctorado/Low complexity predictive lossy compression/article/article.tex",
+		"/G/Mi unidad/Personal/Doctorado/Low complexity predictive lossy compression/article/fixes",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/binary_dequantizer.vhd",
+		"/C/Users/Daniel/Repositorios/axi-modules/src/axi_stream_modules/axis_parallel_to_serial.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/axi-modules/src/pkg/am_functions.vhd",
+		"/C/Users/Daniel/Repositorios/axi-modules/src/axi_stream_modules/axis_serial_to_parallel.vhd",
+		"/C/Users/Daniel/Repositorios/axi-modules/src/axi_lite_modules/axi_to_axis_read_bridge.vhd",
+		"/C/Users/Daniel/Repositorios/axi-modules/src/pkg/am_constants.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/binary_quantizer.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/lcplc_controller.vhd",
+		"/C/Users/Daniel/Repositorios/axi-modules/src/axi_stream_modules/axis_fifo.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/axi-modules/src/axi_stream_modules/axis_fifo.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/axi-modules/src/axi_stream_modules/axis_parallel_to_serial.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/axi-modules/src/axi_stream_modules/axis_serial_to_parallel.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/pkg/lcplc_functions.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/pkg/lcplc_data_types.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/pkg/lcplc_constants.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/pkg/constants.vhd",
+		"/G/Mi unidad/Personal/Doctorado/Low complexity predictive lossy compression/article/rpt/power.txt",
+		"/C/Users/Daniel/Vivado_projects/Lcplc/Lcplc.sim/sim_1/behav/xsim/xvhdl.log",
+		"/C/Users/Daniel/Vivado_projects/Lcplc/Lcplc.sim/sim_1/behav/xsim/elaborate.log",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/coder.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/lcplc.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/two_d_predictor.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/firstband_predictor.vhd",
+		"/G/Mi unidad/Personal/Doctorado/Low complexity predictive lossy compression/article/rpt/compression_timing_data.txt",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/test/test_shared.svh",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/util/axis_filter.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/util/axis_averager.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/error_calc.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/binary_qdq.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/lcplc/Accumulator.java",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/lcplc/Main.java",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/util/axis_synchronizer_passthrough_2.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/util/axis_divider.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/util/axis_synchronizer_2.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/util/axis_accumulator.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/alpha_calc.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/test/inline_axis_checker.sv",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/util/axis_batch_selector.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/util/axis_substituter.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/util/axis_splitter_2.vhd",
+		"/G/Mi unidad/Personal/Doctorado/Low complexity predictive lossy compression/article/graphs/ren_scatter.tex",
+		"/G/Mi unidad/Personal/Doctorado/Low complexity predictive lossy compression/article/graphs/suw_scatter.tex",
+		"/G/Mi unidad/Personal/Doctorado/Low complexity predictive lossy compression/article/graphs/bel_scatter.tex",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/next_xhat_precalc.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/test/helper_axis_reader.sv",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/util/axis_batch_filter.vhd",
+		"/G/Mi unidad/Personal/Doctorado/Low complexity predictive lossy compression/article/exp/suw_proc.txt",
+		"/G/Mi unidad/Personal/Doctorado/Low complexity predictive lossy compression/article/exp/suw.txt",
+		"/G/Mi unidad/Personal/Doctorado/Low complexity predictive lossy compression/article/exp/bel.txt",
+		"/G/Mi unidad/Personal/Doctorado/Low complexity predictive lossy compression/article/exp/bel_proc.txt",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/golomb_coding.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/test/helper_axis_checker.sv",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/util/axis_fifo.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/error_mapper.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/util/axis_merger_2.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/test/test_lcplc.sv",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/util/axis_latched_connection.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/util/axis_interval_clamper.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/kjcalc_axi.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/expzerogolomb.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/alpha_finder.vhd",
+		"/C/Users/Daniel/Docencia/FC/labs/lab_pr_4/notas.txt",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/lcplc/ShifterQuantizer.java",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/nthband_predictor.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/lcplc/ExpGolombCoDec.java",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/lcplc/GolombCoDec.java",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/lcplc/IntegerUniformThresholdQuantizer.java",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/coding_output_packer.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/util/axis_splitter_base.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/code_to_word_segmenter.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/control/drivers/lcplc_controller_v1_0/src/lcplc_controller.c",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/control/drivers/lcplc_controller_v1_0/src/lcplc_controller.h",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/util/axis_data_latch.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/util/axis_synchronizer_latched_2.vhd",
+		"/C/Users/Daniel/Docencia/FC/labs/lab_pr_3/carlos_mod.asm",
+		"/C/Users/Daniel/Docencia/FC/labs/lab_pr_3/carlos_orig.asm",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/word_merger.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/lcplc/MainStripDown.java",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/util/axis_shifter.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/util/axis_partial_sum.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/sliding_accumulator.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/test_data/gc_input.smpl",
+		"/C/Users/Daniel/Repositorios/Lcplc/test_data/gc_param.smpl",
+		"/C/Users/Daniel/Repositorios/Lcplc/test_data/gc_quant.smpl",
+		"/C/Users/Daniel/Repositorios/Lcplc/test_data/gc_code.smpl",
+		"/C/Users/Daniel/Repositorios/Lcplc/test_data/kj.smpl",
+		"/C/Users/Daniel/Repositorios/Lcplc/test_data/merr.smpl",
+		"/C/Users/Daniel/Repositorios/Lcplc/test_data/alpha.smpl",
+		"/C/Users/Daniel/Repositorios/Lcplc/test_data/xmean.smpl",
+		"/C/Users/Daniel/Repositorios/Lcplc/test_data/dflag.smpl",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/util/axis_mult_component_25_x_25.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/test/test_flag_gen.sv",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/flag_generator.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/util/axis_arithmetic_op.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/old/flag_generator_blocked.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/flag_generator_blocked.vhd",
+		"/C/Users/Daniel/Docencia/FC/labs/lab_pr_3/notas_clase.txt",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/old/firstband_predictor.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/firstband_predictor_new.vhd",
+		"/C/Users/Daniel/Downloads/Practica2 _ Parte b.txt",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/util/axis_mult_component_18_x_18.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/util/axis_merger_base.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/packer.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/test_data/x_last_i.smpl",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/util/axis_multiplier.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/test/helper_axis_drain.sv",
+		"/C/Users/Daniel/Docencia/FC/labs/lab_pr_2/notas_clase.txt",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/util/AXI_DEVICE_TEMPLATE.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/util/axis_selector.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/golomb_coding_old.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/test_data/xhatraw.smpl",
+		"/C/Users/Daniel/Repositorios/Lcplc/test_data/alphad.smpl",
+		"/C/Users/Daniel/Repositorios/Lcplc/test_data/xhat.smpl",
+		"/C/Users/Daniel/Repositorios/Lcplc/test_data/xhatmean.smpl",
+		"/C/Users/Daniel/Repositorios/Lcplc/test_data/xtilde_firstband.smpl",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/util/counter.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/util/axis_splitter_3.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/util/axis_splitter_4.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/util/axis_diverter.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/util/axis_comparator.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/coder_old.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/test_data/egz_code.smpl",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/pkg/data_types.vhd",
+		"/C/Users/Daniel/Repositorios/t3chfest-hackathon-2019/README.md",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/util/axis_separator.vhd",
+		"/C/Users/Daniel/Repositorios/Lcplc/src/hdl/util/axis_holder.vhd"
+	],
+	"find":
+	{
+		"height": 27.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "src/axi_lite_modules/axi_to_axis_read_bridge.vhd",
+					"semi_transient": true,
+					"settings":
+					{
+						"buffer_size": 11669,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/VHDL/Syntaxes/VHDL.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 540.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 27.0
+	},
+	"input":
+	{
+		"height": 45.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "project.sublime-project",
+	"replace":
+	{
+		"height": 50.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 330.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

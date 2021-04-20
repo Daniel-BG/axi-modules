@@ -107,16 +107,18 @@ begin
 	
 	seq: process(clk, rst) 
 	begin
-		if rst = '1' then
-			stage_occ <= (others => '0');
-		elsif rising_edge(clk) then
-			if inner_mult_enable = '1' then
-				stage_occ <= stage_occ(stage_occ'high - 1 downto 0) & joint_valid;
-				stage_last <= stage_last(stage_last'high - 1 downto 0) & joint_last;
-				for i in 1 to STAGES_AFTER_SYNC - 1 loop
-					stage_user(i) <= stage_user(i-1);
-				end loop;
-				stage_user(0) <= joint_user;
+		if rising_edge(clk) then
+			if rst = '1' then
+				stage_occ <= (others => '0');
+			else
+				if inner_mult_enable = '1' then
+					stage_occ <= stage_occ(stage_occ'high - 1 downto 0) & joint_valid;
+					stage_last <= stage_last(stage_last'high - 1 downto 0) & joint_last;
+					for i in 1 to STAGES_AFTER_SYNC - 1 loop
+						stage_user(i) <= stage_user(i-1);
+					end loop;
+					stage_user(0) <= joint_user;
+				end if;
 			end if;
 		end if;
 	end process;

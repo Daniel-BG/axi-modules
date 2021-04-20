@@ -67,9 +67,7 @@ begin
 		generic map (
 				DATA_WIDTH_0 => DATA_WIDTH_0,
 				DATA_WIDTH_1 => DATA_WIDTH_1,
-				LAST_POLICY  => LAST_POLICY,
-				USER_WIDTH   => USER_WIDTH,
-				USER_POLICY  => USER_POLICY
+				USER_WIDTH   => USER_WIDTH
 			)
 		port map (
 				clk => clk, rst => rst,
@@ -99,9 +97,7 @@ begin
 		generic map (
 				DATA_WIDTH_0 => DATA_WIDTH_0,
 				DATA_WIDTH_1 => DATA_WIDTH_1,
-				LAST_POLICY  => LAST_POLICY,
-				USER_WIDTH   => USER_WIDTH,
-				USER_POLICY  => USER_POLICY
+				USER_WIDTH   => USER_WIDTH
 			)
 		port map (
 				clk => clk, rst => rst,
