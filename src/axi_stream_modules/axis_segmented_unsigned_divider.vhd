@@ -135,7 +135,7 @@ begin
 						stage_full(0) 	  	<= '0';
 						stage_last(0) 		<= '0';
 						stage_user(0) 		<= (others => '0');
-					elsif pipeline_enable = '1' 
+					elsif pipeline_enable = '1' then
 						if unsigned(joint_dividend) < shifted_divisor(0) then --not substracting
 							dividend_stages(0) <= unsigned(joint_dividend); 
 							quotient_stages(0) <= (others => '0');
