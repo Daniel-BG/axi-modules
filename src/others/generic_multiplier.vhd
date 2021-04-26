@@ -50,23 +50,34 @@ architecture Behavioral of generic_multiplier is
 
 	constant OUTPUT_STAGES: integer := STAGES - 1;
 
-	type prod_stages_t is array(0 to OUTPUT_STAGES) of std_logic_vector(A_SIZE + B_SIZE - 1 downto 0);
+	type prod_stages_t is array(1 to OUTPUT_STAGES) of std_logic_vector(A_SIZE + B_SIZE - 1 downto 0);
 	
 	signal prod_stages: prod_stages_t;
+	signal mult_result: std_logic_vector(A_SIZE + B_SIZE - 1 downto 0);
 	attribute use_dsp : string;
 	attribute use_dsp of prod_stages : signal is "yes";
 begin
+	assert STAGES >= 2 report "Multiplier stages must be at least 2" severity failure;
+
 	gen_s_s: if SIGNED_A and SIGNED_B generate
-		prod_stages(0) <= std_logic_vector(resize(resize(signed(input_reg_a), A_SIZE + B_SIZE) * resize(signed(input_reg_b), A_SIZE + B_SIZE), A_SIZE + B_SIZE));
+		process_s_s: process(input_reg_a, input_reg_b)  begin
+			mult_result <= std_logic_vector(resize(resize(signed(input_reg_a), A_SIZE + B_SIZE) * resize(signed(input_reg_b), A_SIZE + B_SIZE), A_SIZE + B_SIZE));
+		end process;
 	end generate;
 	gen_u_u: if not SIGNED_A and not SIGNED_B generate
-		prod_stages(0) <= std_logic_vector(resize(resize(unsigned(input_reg_a), A_SIZE + B_SIZE) * resize(unsigned(input_reg_b), A_SIZE + B_SIZE), A_SIZE + B_SIZE));
+		process_u_u: process(input_reg_a, input_reg_b)  begin
+			mult_result <= std_logic_vector(resize(resize(unsigned(input_reg_a), A_SIZE + B_SIZE) * resize(unsigned(input_reg_b), A_SIZE + B_SIZE), A_SIZE + B_SIZE));
+		end process;
 	end generate;
 	gen_s_u: if SIGNED_A and not SIGNED_B generate
-		prod_stages(0) <= std_logic_vector(resize(resize(signed(input_reg_a), A_SIZE + B_SIZE) * resize(signed("0" & unsigned(input_reg_b)), A_SIZE + B_SIZE), A_SIZE + B_SIZE));
+		process_s_u: process(input_reg_a, input_reg_b)  begin
+			mult_result <= std_logic_vector(resize(resize(signed(input_reg_a), A_SIZE + B_SIZE) * resize(signed("0" & unsigned(input_reg_b)), A_SIZE + B_SIZE), A_SIZE + B_SIZE));
+		end process;
 	end generate;
 	gen_u_s: if not SIGNED_A and SIGNED_B generate
-		prod_stages(0) <= std_logic_vector(resize(resize(signed("0" & unsigned(input_reg_a)), A_SIZE + B_SIZE) * resize(signed(input_reg_b), A_SIZE + B_SIZE), A_SIZE + B_SIZE));
+		process_u_s: process(input_reg_a, input_reg_b)  begin
+			mult_result <= std_logic_vector(resize(resize(signed("0" & unsigned(input_reg_a)), A_SIZE + B_SIZE) * resize(signed(input_reg_b), A_SIZE + B_SIZE), A_SIZE + B_SIZE));
+		end process;
 	end generate;
 	
 	
@@ -77,7 +88,11 @@ begin
 				input_reg_b <= in_b;
 				input_reg_a <= in_a;
 				for i in 1 to OUTPUT_STAGES loop
-					prod_stages(i) <= prod_stages(i-1);
+					if i = 1 then
+						prod_stages(i) <= mult_result;
+					else
+						prod_stages(i) <= prod_stages(i-1);	
+					end if;
 				end loop;
 			end if;
 		end if;

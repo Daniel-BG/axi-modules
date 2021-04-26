@@ -58,16 +58,15 @@ architecture Behavioral of axis_dotprod is
 	signal transaction_at_a, transaction_at_b, transaction_at_end: std_logic;
 	
 	signal axis_mult_out_d: std_logic_vector((INPUT_A_DATA_WIDTH+INPUT_B_DATA_WIDTH)*VECTOR_LENGTH-1 downto 0);
+	signal axis_mult_out_red: std_logic_vector(INPUT_A_DATA_WIDTH+INPUT_B_DATA_WIDTH+VECTOR_LENGTH_LOG - 1 downto 0);
 	signal axis_mult_out_ready, axis_mult_out_valid, axis_mult_out_last: std_logic;
+	signal axis_mult_out_user: std_logic_vector(USER_WIDTH - 1 downto 0);
 	
-	signal axis_latched_d: std_logic_vector(INPUT_A_DATA_WIDTH+INPUT_B_DATA_WIDTH+VECTOR_LENGTH_LOG - 1 downto 0);
-	signal axis_latched_last, axis_latched_ready, axis_latched_valid: std_logic;
-	signal axis_latched_user: std_logic_vector(USER_WIDTH - 1 downto 0);
 begin
 	axis_input_a_ready <= axis_input_a_ready_buf;
 	axis_input_b_ready <= axis_input_b_ready_buf;
 	--first multiplier
-	mult_i: entity work.AXIS_MULTIPLIER
+	mult_zero: entity work.AXIS_MULTIPLIER
 		generic map (
 			DATA_WIDTH_0 => INPUT_A_DATA_WIDTH,
 			DATA_WIDTH_1 => INPUT_B_DATA_WIDTH,
@@ -91,17 +90,17 @@ begin
 			input_1_last    => axis_input_b_last,
 			input_1_user    => axis_input_b_user,
 			output_data		=> axis_mult_out_d((INPUT_A_DATA_WIDTH+INPUT_B_DATA_WIDTH)*(0+1)-1 downto (INPUT_A_DATA_WIDTH+INPUT_B_DATA_WIDTH)*0),
-			output_valid	=> axis_latched_valid,
-			output_ready	=> axis_latched_ready,
-			output_last		=> axis_latched_last,
-			output_user 	=> axis_latched_user
+			output_valid	=> axis_mult_out_valid,
+			output_ready	=> axis_mult_out_ready,
+			output_last		=> axis_mult_out_last,
+			output_user 	=> axis_mult_out_user
 		);
 			
 	--generate multipliers
 	--take first as sync module since the rest are synchronized
 	transaction_at_a <= axis_input_a_valid and axis_input_a_ready_buf;
 	transaction_at_b <= axis_input_b_valid and axis_input_b_ready_buf;
-	transaction_at_end <= axis_latched_ready and axis_latched_valid;
+	transaction_at_end <= axis_mult_out_ready and axis_mult_out_valid;
 	gen_multipliers: for i in 1 to VECTOR_LENGTH-1 generate
 		mult_i: entity work.AXIS_MULTIPLIER
 			generic map (
@@ -143,7 +142,7 @@ begin
 		)
 		Port map( 
 			axis_in_d => axis_mult_out_d,
-			axis_out_d => axis_latched_d
+			axis_out_d => axis_mult_out_red
 		);
 
 
@@ -154,11 +153,11 @@ begin
 		)
 		port map ( 
 			clk => clk, rst => rst,
-			input_data	=> axis_latched_d,
-			input_ready => axis_latched_ready,
-			input_valid => axis_latched_valid,
-			input_last  => axis_latched_last,
-			input_user  => axis_latched_user,
+			input_data	=> axis_mult_out_red,
+			input_ready => axis_mult_out_ready,
+			input_valid => axis_mult_out_valid,
+			input_last  => axis_mult_out_last,
+			input_user  => axis_mult_out_user,
 			output_data	=> axis_output_d,
 			output_ready=> axis_output_ready,
 			output_valid=> axis_output_valid,

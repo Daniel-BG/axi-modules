@@ -27,11 +27,13 @@ module helper_axis_reader(
 	parameter DATA_WIDTH=10;
 	parameter FILE_NAME = null;
 	parameter SKIP = 0;
+	parameter BINARY = 0;
 
 	//file stuff
 	int fd; // file descriptor
 	int status; //status for file reads
 	reg [DATA_WIDTH-1:0] value; //values read from file go here
+	string errorMsg;
 	////
 	
 	input					clk, rst, enable;
@@ -48,12 +50,25 @@ module helper_axis_reader(
 	always @(posedge clk) begin
 		if (rst == 1) begin
 			$fclose(fd);
-			fd = $fopen(FILE_NAME, "r");
+			if (BINARY == 0) begin
+				fd = $fopen(FILE_NAME, "r");
+			end else begin
+				fd = $fopen(FILE_NAME, "rb");
+			end;
+			if (!fd) begin
+				$error("Error when opening file");
+			end;
 			//SKIP+1 so that value loads the first value already
 			for (int i = 0; i < SKIP + 1; i++) begin
-				status = $fscanf(fd, "%d", value);
-				if (status != 1)
-					$error("Error when reading file (skipping values)");
+				if (BINARY == 0) begin
+					status = $fscanf(fd, "%d", value);
+				end else begin
+					status = $fread(value, fd);
+				end;
+				if (status != 1) begin
+					//$ferror(fd, errorMsg);
+					$error("Error when reading file (skipping values): %d ", status);
+				end;
 			end
 			output_valid_pre = 1;
 		end else if (output_valid_pre == 1 && output_ready == 1 && enable == 1) begin
@@ -61,7 +76,11 @@ module helper_axis_reader(
 				output_valid_pre = 0;
 				$info("End of file reached! %s", FILE_NAME);
 			end else begin
-				status = $fscanf(fd, "%d", value);
+				if (BINARY == 0) begin
+					status = $fscanf(fd, "%d", value);
+				end else begin
+					status = $fread(value, fd);
+				end;
 				if (status != 1) begin
 					if ($feof(fd)) begin 
 						$info("End of file reached! %s", FILE_NAME);

@@ -84,20 +84,20 @@ begin
 
 
 	input_valid <= axis_in_0_valid & axis_in_1_valid & axis_in_2_valid & axis_in_3_valid;
-	axis_in_0_ready <= input_ready(0);
-	axis_in_1_ready <= input_ready(1);
-	axis_in_2_ready <= input_ready(2);
-	axis_in_3_ready <= input_ready(3);
+	axis_in_0_ready <= input_ready(3);
+	axis_in_1_ready <= input_ready(2);
+	axis_in_2_ready <= input_ready(1);
+	axis_in_3_ready <= input_ready(0);
 	input_data  <= axis_in_0_d & axis_in_1_d & axis_in_2_d & axis_in_3_d;
 	input_last  <= axis_in_0_last & axis_in_1_last & axis_in_2_last & axis_in_3_last;
 	input_user  <= axis_in_0_user & axis_in_1_user & axis_in_2_user & axis_in_3_user;
 	--from internal module
 	axis_out_valid <= output_valid;
 	output_ready   <= axis_out_ready;
-	axis_out_d_0 <= output_data(DATA_WIDTH*(0+1)-1 downto DATA_WIDTH*0);
-	axis_out_d_1 <= output_data(DATA_WIDTH*(1+1)-1 downto DATA_WIDTH*1);
-	axis_out_d_2 <= output_data(DATA_WIDTH*(2+1)-1 downto DATA_WIDTH*2);
-	axis_out_d_3 <= output_data(DATA_WIDTH*(3+1)-1 downto DATA_WIDTH*3);
+	axis_out_d_0 <= output_data(DATA_WIDTH*(3+1)-1 downto DATA_WIDTH*3);
+	axis_out_d_1 <= output_data(DATA_WIDTH*(2+1)-1 downto DATA_WIDTH*2);
+	axis_out_d_2 <= output_data(DATA_WIDTH*(1+1)-1 downto DATA_WIDTH*1);
+	axis_out_d_3 <= output_data(DATA_WIDTH*(0+1)-1 downto DATA_WIDTH*0);
 	
 	assert LAST_POLICY = OR_ALL or LAST_POLICY = AND_ALL report "Only OR_ALL and AND_ALL supported" severity failure;
 	gen_last_orall: if LAST_POLICY = OR_ALL generate

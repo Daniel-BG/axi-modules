@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: UCM
-// Engineer: Daniel BÃ¡scones
+// Engineer: Daniel Báscones
 // 
 // Create Date: 25.02.2019 12:00:40
 // Design Name: 
@@ -27,6 +27,8 @@ module inline_axis_checker (
 	parameter DATA_WIDTH=10;
 	parameter FILE_NAME = null;
 	parameter SKIP = 0;
+	parameter SHOW_ALL = 0;
+	parameter BINARY = 0;
 
 	input					clk, rst;
 	input 					valid;
@@ -37,8 +39,10 @@ module inline_axis_checker (
 	//reader from file
 	wire ref_valid, ref_ready;
 	wire [DATA_WIDTH - 1:0] ref_data;
+	
+	int numloops;
 
-	helper_axis_reader #(.DATA_WIDTH(DATA_WIDTH), .FILE_NAME(FILE_NAME), .SKIP(SKIP)) reference_reader
+	helper_axis_reader #(.DATA_WIDTH(DATA_WIDTH), .FILE_NAME(FILE_NAME), .SKIP(SKIP), .BINARY(BINARY)) reference_reader
 		(
 			.clk         (clk),
 			.rst         (rst),
@@ -52,18 +56,25 @@ module inline_axis_checker (
 	assign ref_ready = valid & ready;
 
 	always @(posedge clk) begin
+		if (rst == 1) begin
+			numloops = 0;
+		end 
 		if (valid == 1 && ready == 1) begin
 			if (ref_valid == 1) begin
 				//data should match ref_data
-				if (data != ref_data) begin
-					$info("Seen: 0x%h Expected: 0x%h", data, ref_data);
+				if (data != ref_data || (^data === 1'bX) || $isunknown(data)) begin
+					$info("Seen: 0x%h Expected: 0x%h (@ %d)", data, ref_data, numloops);
+					$stop;
 				end else begin
 					//data matches expected value
-					//$info("Displaying info 0x%h", data); 
+					if (SHOW_ALL == 1) begin
+						$info("Displaying info 0x%h", data); 
+					end
 				end
+				numloops = numloops + 1;
 			end else begin
 				//error, we don't have data we are asking for
-				$display("Data run out");
+				$info("Data run out");
 			end
 		end
 	end

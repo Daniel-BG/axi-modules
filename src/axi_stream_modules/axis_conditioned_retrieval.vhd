@@ -89,7 +89,7 @@ begin
 			end if;
 		elsif state_curr = COORD_READ then
 			if saved_cond = '0' then
-				--first line and sample, we output ZERO always, since we don't have the values in the queue
+				--if condition is zero, we just put a zero 
 				axis_out_data_valid <= '1';
 				axis_out_data_d <= (others => '0');
 				axis_out_data_user <= saved_user;
