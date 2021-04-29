@@ -71,13 +71,15 @@ entity AXI_TO_AXIS_READ_BRIDGE is
 		m_m_axi_rready		: out std_logic;
 		
 		--debug ports
-		dbg_inbyte			: out std_logic_vector(M_AXI_ADDR_WIDTH - 1 downto 0)
+		dbg_inbyte			: out std_logic_vector(M_AXI_ADDR_WIDTH - 1 downto 0);
+		dbg_state			: out std_logic_vector(31 downto 0)
 	);
 end AXI_TO_AXIS_READ_BRIDGE;
 
 architecture AXI_TO_AXIS_READ_BRIDGE_arc of AXI_TO_AXIS_READ_BRIDGE is
 	--count number of bytes read so far (for debugging purposes)
 	signal dbg_reg_inbyte, dbg_reg_inbyte_next: std_logic_vector(M_AXI_ADDR_WIDTH - 1 downto 0);
+	signal dbg_state: std_logic_vector(31 downto 0);
 	
 	--ddr read states
 	type read_state_t is (READ_IDLE, READ_READY, READ_REQUEST, READ_TRANSFER, READ_FINISH);
@@ -159,8 +161,10 @@ begin
 		ififo_input_last 			<= '0';
 		--
 		dbg_reg_inbyte_next 		<= dbg_reg_inbyte;
+		dbg_state					<= "00000000";
 
 		if read_state_curr = READ_IDLE then
+			dbg_state <= x"00000001";
 			c_s_axis_ready <= '1';
 			--wait for central control to enable us
 			if c_s_axis_valid = '1' and c_s_axis_start = '1' and c_s_axis_stop = '0' then
@@ -169,6 +173,7 @@ begin
 				read_addr_next <= c_s_axis_addr;
 			end if;
 		elsif read_state_curr = READ_READY then
+			dbg_state <= x"00000010";
 			c_s_axis_ready <= '1';
 			if c_s_axis_valid = '0' then
 				--check if we still have bytes left
@@ -192,6 +197,7 @@ begin
 				end if;
 			end if;
 		elsif read_state_curr = READ_REQUEST then
+			dbg_state <= x"00000100";
 			--align for read mux
 			read_align_next			  <= read_addr_curr(M_AXI_DATA_BYTE_LOG - 1 downto D_AXIS_DATA_BYTE_LOG);
 			--if we still have more than the max transaction of bytes left, perform a transaction
@@ -215,6 +221,7 @@ begin
 				--read_addr_next; --don't care for this value since it won't be used again
 			end if;
 		elsif read_state_curr = READ_TRANSFER then
+			dbg_state <= x"00001000";
 			ififo_input_valid <= m_m_axi_rvalid;
 			m_m_axi_rready <= ififo_input_ready;
 			if read_bytes_remaining_curr = (read_bytes_remaining_curr'high downto 0 => '0') then
@@ -229,6 +236,7 @@ begin
 				end if;
 			end if;
 		elsif read_state_curr = READ_FINISH then
+			dbg_state <= x"00010000";
 			--no more bytes left, goto idle state when we can (wait to sync with master fsm)
 			c_m_axis_valid <= '1';
 			if c_m_axis_ready = '1' then
@@ -257,6 +265,9 @@ begin
 				end if;
 			end loop;
 		end process;
+	end generate;
+	gen_ififo_input_equal_length: if M_AXI_DATA_BYTE_LOG = D_AXIS_DATA_BYTE_LOG generate
+		ififo_input_data <= m_m_axi_rdata;
 	end generate;
 
 	--FIFO buffer to allow for BURST transactions
