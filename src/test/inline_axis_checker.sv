@@ -58,9 +58,8 @@ module inline_axis_checker (
 	always @(posedge clk) begin
 		if (rst == 1) begin
 			numloops = 0;
-		end 
-		if (valid == 1 && ready == 1) begin
-			if (ref_valid == 1) begin
+		end else if (valid == 1 && ready == 1) begin
+			if (ref_valid == 1 && ref_ready == 1) begin
 				//data should match ref_data
 				if (data != ref_data || (^data === 1'bX) || $isunknown(data)) begin
 					$info("Seen: 0x%h Expected: 0x%h (@ %d)", data, ref_data, numloops);

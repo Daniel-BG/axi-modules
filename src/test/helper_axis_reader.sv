@@ -81,6 +81,7 @@ module helper_axis_reader(
 				end else begin
 					status = $fread(value, fd);
 				end;
+				//$info("Reading new value! %d", value);
 				if (status != 1) begin
 					if ($feof(fd)) begin 
 						$info("End of file reached! %s", FILE_NAME);
