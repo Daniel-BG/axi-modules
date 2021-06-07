@@ -87,7 +87,7 @@ architecture Behavioral of AXIS_ASYNC_FIFO is
 	function f_bin_2_gray (bin_stdlv: in std_logic_vector) return std_logic_vector is
 		variable output: std_logic_vector(bin_stdlv'range);
 	begin
-		output := bin_stdlv xor ("0" & bin_stdlv(bin_stdlv'high - 1 downto 0));
+		output := bin_stdlv xor ("0" & bin_stdlv(bin_stdlv'high downto 1));
 		return output;
 	end;
 
@@ -208,7 +208,7 @@ begin
 		end if;
 	end process;
 
-	out_empty_next <= '1' when out_gray_next(FIFO_DEPTH_LOG) = out_xin_gray(FIFO_DEPTH_LOG) else '0';
+	out_empty_next <= '1' when out_gray_next = out_xin_gray else '0';
 	out_axis_out_almost_empty_next <= '1' when unsigned(out_xin_ptr) - unsigned(out_ptr) <= to_unsigned(ALMOST_EMPTY_THRESHOLD, FIFO_DEPTH_LOG + 1) else '0';
 
 	assign_next_empty: process(axis_out_clk, rst) 

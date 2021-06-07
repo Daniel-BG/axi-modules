@@ -73,7 +73,8 @@ module inline_axis_checker (
 				numloops = numloops + 1;
 			end else begin
 				//error, we don't have data we are asking for
-				$info("Data run out");
+				$info("Data run out, check why (@ %d)", numloops);
+				$stop;
 			end
 		end
 	end
