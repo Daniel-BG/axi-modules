@@ -70,8 +70,8 @@ architecture Behavioral of AXIS_SYNCHRONIZER_LATCHED_2 is
 	signal output_valid_in: std_logic;
 begin
 
-	input_0_ready_in <= '1' when buf_i_0_full = '0' or buf_o_0_full = '0' else '0';
-	input_1_ready_in <= '1' when buf_i_1_full = '0' or buf_o_1_full = '0' else '0';
+	input_0_ready_in <= '1' when rst = '0' and (buf_i_0_full = '0' or buf_o_0_full = '0') else '0';
+	input_1_ready_in <= '1' when rst = '0' and (buf_i_1_full = '0' or buf_o_1_full = '0') else '0';
 	input_0_ready <= input_0_ready_in;
 	input_1_ready <= input_1_ready_in;
 	

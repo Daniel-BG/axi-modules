@@ -49,7 +49,7 @@ end axis_conditioned_selector;
 
 architecture Behavioral of axis_conditioned_selector is
 
-	type state_t is (IDLE, COORD_READ);
+	type state_t is (RESET, IDLE, COORD_READ);
 	signal state_curr, state_next: state_t;
 	
 	signal saved_cond, saved_cond_next: std_logic;
@@ -61,7 +61,7 @@ begin
 	begin
 		if rising_edge(clk) then
 			if rst = '1' then
-				state_curr <= IDLE;
+				state_curr <= RESET;
 				saved_cond <= '0';
 				saved_user <= (others => '0');
 			else
@@ -84,9 +84,11 @@ begin
 		axis_out_data_d <= (others => '0');
 		axis_in_data_0_ready <= '0';
 		axis_in_data_1_ready <= '0';
-		axis_in_cond_ready <= '0';			
-		
-		if state_curr = IDLE then
+		axis_in_cond_ready <= '0';	
+
+		if state_curr = RESET then		
+			state_next <= IDLE;
+		elsif state_curr = IDLE then
 			axis_in_cond_ready <= '1';
 			if axis_in_cond_valid = '1' then
 				state_next <= COORD_READ;

@@ -60,8 +60,8 @@ begin
 	output_last <= buf1_last;
 	output_user <= buf1_user;
 
-	inner_input_ready	<= not buf0_full;
-	inner_output_valid	<=     buf1_full;
+	inner_input_ready	<= (not rst) and (not buf0_full);
+	inner_output_valid	<= (not rst) and  buf1_full;
 	input_ready			<= inner_input_ready;
 	output_valid		<= inner_output_valid;
 

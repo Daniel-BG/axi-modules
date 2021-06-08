@@ -52,7 +52,7 @@ architecture Behavioral of AXIS_FIFO is
 	signal memory_wren, memory_readen: std_logic;
 	signal memory_out: std_logic_vector(DATA_WIDTH - 1 downto 0);
 	
-	type fifo_state_t is (EMPTY, HALF_BUFFERED, HALF_UNBUFFERED, FULL_BUFFERED, FULL_UNBUFFERED);
+	type fifo_state_t is (RESET, EMPTY, HALF_BUFFERED, HALF_UNBUFFERED, FULL_BUFFERED, FULL_UNBUFFERED);
 	signal state_curr, state_next: fifo_state_t;
 	
 	--head is where we will be writing to
@@ -76,7 +76,7 @@ begin
 				head <= 0;
 				tail <= 1; --we read ahead of time to be able to use syncrhonous memory
 				occupancy <= 0;
-				state_curr <= EMPTY;
+				state_curr <= RESET;
 				input_buff <= (others => '0');
 			else
 				head <= head_next;
@@ -129,8 +129,10 @@ begin
 		occupancy_next <= occupancy;
 
 		input_buff_next <= input_buff;
-	
-		if state_curr = EMPTY then
+
+		if state_curr = RESET then
+			state_next <= EMPTY;
+		elsif state_curr = EMPTY then
 			input_ready <= '1';
 			if input_valid = '1' then
 				head_next <= head_incr;

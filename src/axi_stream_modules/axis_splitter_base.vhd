@@ -61,8 +61,10 @@ architecture Behavioral of AXIS_SPLITTER_BASE is
 begin
 	output_data <= buf1;
 
-	inner_in_ready	<= not buf0_full;
-	inner_out_valid	<=     buf1_full;
+	inner_in_ready	<= (not rst) and (not buf0_full);
+	gen_inner_out_valid: for i in 0 to OUTPUT_PORTS - 1 generate
+		inner_out_valid(i)	<= (not rst) and buf1_full(i);
+	end generate;
 	input_ready		<= inner_in_ready;
 	output_valid	<= inner_out_valid;
 	output_last		<= buf1_last;
