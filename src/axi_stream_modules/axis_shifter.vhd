@@ -76,7 +76,16 @@ architecture Behavioral of AXIS_SHIFTER is
 	signal valid, valid_next: std_logic_vector(STAGES downto 0);
 	signal last, last_next: std_logic_vector(STAGES downto 0);
 	signal enable: std_logic;
+
+	--inner signals
+	signal inner_reset			: std_logic;
 begin
+
+	reset_replicator: entity work.reset_replicator
+		port map (
+			clk => clk, rst => rst,
+			rst_out => inner_reset
+		);
 
 	sync_inputs: entity work.AXIS_SYNCHRONIZER_2
 		Generic map (
@@ -86,7 +95,7 @@ begin
 			LAST_POLICY  => LAST_POLICY
 		)
 		Port map (
-			clk => clk, rst => rst,
+			clk => clk, rst => inner_reset,
 			input_0_valid => shift_valid,
 			input_0_ready => shift_ready,
 			input_0_data  => shift_data,
@@ -210,7 +219,7 @@ begin
 --	valid_next: std_logic_vector(STAGES downto 0);
 --	signal last, last_next
 	
-	seq: process(clk, rst, synced_data, synced_shift, synced_valid, enable, synced_last)
+	seq: process(clk, inner_reset, synced_data, synced_shift, synced_valid, enable, synced_last)
 	begin
 		memory_curr(0) <= std_logic_vector(resize(unsigned(synced_data), OUTPUT_WIDTH));
 		shiftamt_curr(0) <= synced_shift;
@@ -222,7 +231,7 @@ begin
 --		end if;
 
 		if rising_edge(clk) then
-			if rst = '1' then	
+			if inner_reset = '1' then	
 				valid(valid'high downto 0) <= (others => '0');
 				last (last'high  downto 0) <= (others => '0');
 			else

@@ -52,7 +52,15 @@ architecture Behavioral of AXIS_BATCH_FILTER is
 	signal flag_buf, flag_buf_next: std_logic;
 	
 	signal filter: boolean;
+	--inner signals
+	signal inner_reset			: std_logic;
 begin
+
+	reset_replicator: entity work.reset_replicator
+		port map (
+			clk => clk, rst => rst,
+			rst_out => inner_reset
+		);
 
 	output_data <= input_data;
 
@@ -64,10 +72,10 @@ begin
 	end generate;
 
 
-	seq : process (rst, clk)
+	seq : process (inner_reset, clk)
 	begin
 		if (rising_edge(clk)) then
-			if rst = '1' then
+			if inner_reset = '1' then
 				state_curr <= IDLE;
 				flag_buf <= '0';
 			else

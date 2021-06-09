@@ -54,21 +54,30 @@ architecture Behavioral of AXIS_LATCHED_CONNECTION is
 	
 	--inner signals
 	signal inner_input_ready, inner_output_valid: std_logic;
+	
+	--inner signals
+	signal inner_reset			: std_logic;
 begin
+
+	reset_replicator: entity work.reset_replicator
+		port map (
+			clk => clk, rst => rst,
+			rst_out => inner_reset
+		);
 
 	output_data <= buf1;
 	output_last <= buf1_last;
 	output_user <= buf1_user;
 
-	inner_input_ready	<= (not rst) and (not buf0_full);
-	inner_output_valid	<= (not rst) and  buf1_full;
+	inner_input_ready	<= (not inner_reset) and (not buf0_full);
+	inner_output_valid	<= (not inner_reset) and  buf1_full;
 	input_ready			<= inner_input_ready;
 	output_valid		<= inner_output_valid;
 
-	seq: process(clk, rst)
+	seq: process(clk, inner_reset)
 	begin
 		if rising_edge(clk) then
-			if rst = '1' then
+			if inner_reset = '1' then
 				buf0_full <= '0';
 				buf1_full <= '0';
 				buf0 	  <= (others => '0');

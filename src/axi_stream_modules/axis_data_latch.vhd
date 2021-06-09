@@ -51,7 +51,16 @@ architecture Behavioral of AXIS_DATA_LATCH is
 
 	signal buf_last: std_logic;
 	signal buf_user: std_logic_vector(USER_WIDTH - 1 downto 0);
+
+	--inner signals
+	signal inner_reset			: std_logic;
 begin
+
+	reset_replicator: entity work.reset_replicator
+		port map (
+			clk => clk, rst => rst,
+			rst_out => inner_reset
+		);
 
 	input_ready <= '1' when buf_full = '0' or output_ready = '1' else '0';
 	output_valid <= buf_full;
@@ -59,7 +68,7 @@ begin
 	seq: process(clk)
 	begin
 		if rising_edge(clk) then
-			if rst = '1' then
+			if inner_reset = '1' then
 				buf_full <= '0';
 			else
 				if output_ready = '1' or buf_full = '0' then

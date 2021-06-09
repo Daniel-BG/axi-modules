@@ -80,7 +80,16 @@ architecture Behavioral of AXIS_ARITHMETIC_OP is
 	signal result: std_logic_vector(OUTPUT_DATA_WIDTH - 1 downto 0);
 	attribute USE_DSP : string;
 	attribute USE_DSP of result : signal is "NO";
+
+	--inner signals
+	signal inner_reset			: std_logic;
 begin
+
+	reset_replicator: entity work.reset_replicator
+		port map (
+			clk => clk, rst => rst,
+			rst_out => inner_reset
+		);
 
 	data_joiner: entity work.AXIS_SYNCHRONIZER_2
 		generic map (
@@ -92,7 +101,7 @@ begin
 			USER_WIDTH   => USER_WIDTH
 		)
 		port map (
-			clk => clk, rst => rst,
+			clk => clk, rst => inner_reset,
 			input_0_valid => input_0_valid,
 			input_0_ready => input_0_ready,
 			input_0_data  => input_0_data,
@@ -139,10 +148,10 @@ begin
 		result <= std_logic_vector(unsigned(joint_data_0_ex) - unsigned(joint_data_1_ex));
 	end generate;
 	
-	seq_update: process(clk, rst)
+	seq_update: process(clk, inner_reset)
 	begin
 		if rising_edge(clk) then
-			if rst = '1' then
+			if inner_reset = '1' then
 				output_valid_reg <= '0';
 				output_last_reg <= '0';
 				output_reg <= (others => '0');

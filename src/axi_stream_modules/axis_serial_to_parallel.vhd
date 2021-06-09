@@ -48,7 +48,7 @@ entity AXIS_SERIAL_TO_PARALLEL is
 end AXIS_SERIAL_TO_PARALLEL;
 
 architecture axis_serial_to_parallel_arc of AXIS_SERIAL_TO_PARALLEL is
-	type serial_to_parallel_state_t is (IDLE, BUFFERING, SENDING);
+	type serial_to_parallel_state_t is (RESET, IDLE, BUFFERING, SENDING);
 	signal state_curr, state_next: serial_to_parallel_state_t;
 
 	--we always input from right to left, and then we can reorder the signals if needed
@@ -63,7 +63,7 @@ begin
 	begin
 		if rising_edge(clk) then
 			if rst = '1' then
-				state_curr <= IDLE;
+				state_curr <= RESET;
 			else
 				state_curr <= state_next;
 				output_data_buffer <= output_data_buffer_next;
@@ -90,7 +90,9 @@ begin
 		output_user_buffer_next <= output_user_buffer;
 		output_buffer_occ_next  <= output_buffer_occ;
 
-		if state_curr = IDLE then
+		if state_curr = RESET then
+			state_next <= IDLE;
+		elsif state_curr = IDLE then
 			input_ready <= '1';
 			if input_valid = '1' then
 				output_data_buffer_next <= output_data_buffer_shifted;

@@ -76,7 +76,16 @@ architecture Behavioral of axis_segmented_unsigned_divider is
 	signal stage_user 		: user_stages_t;
 	 
 	signal pipeline_enable  : std_logic;
+
+	--inner signals
+	signal inner_reset			: std_logic;
 begin
+
+	reset_replicator: entity work.reset_replicator
+		port map (
+			clk => clk, rst => rst,
+			rst_out => inner_reset
+		);
 	
 	assert DIVISOR_WIDTH <= DIVIDEND_WIDTH report "DIVIDEND MUST BE WIDER THAN DIVISOR" severity failure;
 	
@@ -101,7 +110,7 @@ begin
 			USER_POLICY => USER_POLICY
 		)
 		port map (
-			clk => clk, rst => rst,
+			clk => clk, rst => inner_reset,
 			input_0_valid => axis_dividend_valid,
 			input_0_ready => axis_dividend_ready,
 			input_0_data  => std_logic_vector(axis_dividend_data),
@@ -125,10 +134,10 @@ begin
 	gen_stages: for i in 0 to STAGES-1 generate
 		gen_zero: if i = 0 generate
 			shifted_divisor(0) <= shift_left(resize(unsigned(joint_divisor), DIVIDEND_WIDTH + DIVISOR_WIDTH - 1), STAGES - 1);
-			register_stage_0: process(clk, rst, pipeline_enable)
+			register_stage_0: process(clk, inner_reset, pipeline_enable)
 			begin
 				if rising_edge(clk) then
-					if rst = '1' then
+					if inner_reset = '1' then
 						dividend_stages(0) 	<= (others => '0');
 						divisor_stages(0)  	<= (others => '0');
 						quotient_stages(0) 	<= (others => '0');
@@ -158,10 +167,10 @@ begin
 			gen_last: if i = STAGES - 1 generate
 				shifted_divisor(i) <= resize(unsigned(divisor_stages(i-1)), DIVIDEND_WIDTH + DIVISOR_WIDTH - 1);
 			end generate;
-			register_stage_i: process(clk, rst, pipeline_enable)
+			register_stage_i: process(clk, inner_reset, pipeline_enable)
 			begin
 				if rising_edge(clk) then
-					if rst = '1' then
+					if inner_reset = '1' then
 						dividend_stages(i) 	<= (others => '0');
 						divisor_stages(i)  	<= (others => '0');
 						quotient_stages(i) 	<= (others => '0');

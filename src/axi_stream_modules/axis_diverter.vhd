@@ -48,14 +48,23 @@ architecture Behavioral of AXIS_DIVERTER is
 	type separator_state_t is (PORT_ZERO, PORT_ONE);
 	signal state_curr, state_next: separator_state_t;
 	
+	--inner signals
+	signal inner_reset			: std_logic;
 begin
+
+	reset_replicator: entity work.reset_replicator
+		port map (
+			clk => clk, rst => rst,
+			rst_out => inner_reset
+		);
+
 	output_0_data <= input_data;
 	output_1_data <= input_data;
 
 	seq: process(clk)
 	begin
 		if rising_edge(clk) then
-			if rst = '1' then
+			if inner_reset = '1' then
 				state_curr <= PORT_ZERO;
 			else
 				state_curr <= STATE_NEXT;

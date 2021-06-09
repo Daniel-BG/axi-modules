@@ -69,7 +69,16 @@ architecture Behavioral of AXIS_COMPARATOR is
 	signal op_enable: std_logic;
 	
 	signal result: std_logic;
+
+	--inner signals
+	signal inner_reset			: std_logic;
 begin
+
+	reset_replicator: entity work.reset_replicator
+		port map (
+			clk => clk, rst => rst,
+			rst_out => inner_reset
+		);
 
 	gen_unsync: if not SYNCHRONIZE generate
 		input_sync_valid <= input_0_valid;
@@ -88,7 +97,7 @@ begin
 				LAST_POLICY  => LAST_POLICY
 			)
 			Port map (
-				clk => clk, rst => rst,
+				clk => clk, rst => inner_reset,
 				--to input axi port
 				input_0_valid => input_0_valid,
 				input_0_ready => input_0_ready,
@@ -128,10 +137,10 @@ begin
 		result <= '1' when unsigned(input_sync_data_0) > unsigned(input_sync_data_1) else '0';
 	end generate;  
 	
-	seq_update: process(clk, rst)
+	seq_update: process(clk, inner_reset)
 	begin
 		if rising_edge(clk) then
-			if rst = '1' then
+			if inner_reset = '1' then
 				output_valid_reg <= '0';
 				output_reg <= '0';
 				output_last_reg <= '0';

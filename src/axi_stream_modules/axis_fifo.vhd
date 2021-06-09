@@ -64,7 +64,16 @@ architecture Behavioral of AXIS_FIFO is
 	signal input_buff, input_buff_next: std_logic_vector(DATA_WIDTH - 1 downto 0);
 	
 	signal almost_full, almost_empty: boolean;
+	
+	--inner signals
+	signal inner_reset			: std_logic;
 begin
+
+	reset_replicator: entity work.reset_replicator
+		port map (
+			clk => clk, rst => rst,
+			rst_out => inner_reset
+		);
 
 	flag_almost_full  <= '1' when occupancy >= ALMOST_FULL_THRESHOLD else '0';
 	flag_almost_empty <= '1' when occupancy <= ALMOST_EMPTY_THRESHOLD else '0';
@@ -72,7 +81,7 @@ begin
 	seq: process(clk)
 	begin
 		if rising_edge(clk) then
-			if rst = '1' then
+			if inner_reset = '1' then
 				head <= 0;
 				tail <= 1; --we read ahead of time to be able to use syncrhonous memory
 				occupancy <= 0;
@@ -101,7 +110,7 @@ begin
 	almost_precalc: process(clk)
 	begin
 		if rising_edge(clk) then
-			if rst = '1' then
+			if inner_reset = '1' then
 				almost_empty <= false;
 				almost_full  <= false;
 			else

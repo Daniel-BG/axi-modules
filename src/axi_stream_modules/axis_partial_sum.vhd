@@ -54,7 +54,16 @@ architecture Behavioral of AXIS_PARTIAL_SUM is
 
 	--buffered signals
 	signal acc_last_buf, acc_last_buf_next: std_logic;
+	--inner signals
+	signal inner_reset			: std_logic;
 begin
+
+	reset_replicator: entity work.reset_replicator
+		port map (
+			clk => clk, rst => rst,
+			rst_out => inner_reset
+		);
+
 	--SHARED STUFF--
 	----------------
 	gen_sub: if not IS_ADD generate
@@ -70,7 +79,7 @@ begin
 	acc_update: process(clk)
 	begin
 		if rising_edge(clk) then
-			if rst = '1' or inner_accumulator_rst = '1' then
+			if inner_reset = '1' or inner_accumulator_rst = '1' then
 				inner_accumulator <= std_logic_vector(to_unsigned(RESET_VALUE, COUNTER_WIDTH_LOG));
 			elsif inner_accumulator_enable = '1' then
 				inner_accumulator <= inner_accumulator_next;
@@ -96,7 +105,7 @@ begin
 		state_update: process(clk)
 		begin
 			if rising_edge(clk) then
-				if rst = '1' then
+				if inner_reset = '1' then
 					state_curr <= AWAIT;
 					acc_last_buf <= '0';
 				else

@@ -62,7 +62,15 @@ architecture Behavioral of AXIS_SELECTOR is
 	signal final_joint_flag: std_logic_vector(0 downto 0);
 	signal final_joint_data_false, final_joint_data_true: std_logic_vector(DATA_WIDTH - 1 downto 0);
 	
+	--inner signals
+	signal inner_reset			: std_logic;
 begin
+
+	reset_replicator: entity work.reset_replicator
+		port map (
+			clk => clk, rst => rst,
+			rst_out => inner_reset
+		);
 	
 	join_input_ports: entity work.AXIS_SYNCHRONIZER_2
 		Generic map (
@@ -71,7 +79,7 @@ begin
 			LAST_POLICY  => LAST_POLICY
 		)
 		Port map (
-			clk => clk, rst => rst,
+			clk => clk, rst => inner_reset,
 			input_0_valid => input_0_valid,
 			input_0_ready => input_0_ready,
 			input_0_data  => input_0_data,
@@ -95,7 +103,7 @@ begin
 			LAST_POLICY  => PASS_ZERO
 		)
 		Port map (
-			clk => clk, rst => rst,
+			clk => clk, rst => inner_reset,
 			input_0_valid => joint_inputs_valid,
 			input_0_ready => joint_inputs_ready,
 			input_0_data  => joint_flag_input_data,

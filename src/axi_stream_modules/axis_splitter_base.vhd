@@ -58,13 +58,22 @@ architecture Behavioral of AXIS_SPLITTER_BASE is
 	--inner signals
 	signal inner_in_ready: std_logic;
 	signal inner_out_valid: std_logic_vector(OUTPUT_PORTS - 1 downto 0);
+	
+	--inner signals
+	signal inner_reset			: std_logic;
 begin
+
+	reset_replicator: entity work.reset_replicator
+		port map (
+			clk => clk, rst => rst,
+			rst_out => inner_reset
+		);
+
 	output_data <= buf1;
 
-	inner_in_ready	<= (not rst) and (not buf0_full);
-	gen_inner_out_valid: for i in 0 to OUTPUT_PORTS - 1 generate
-		inner_out_valid(i)	<= (not rst) and buf1_full(i);
-	end generate;
+	inner_in_ready	<= (not inner_reset) and (not buf0_full);
+	inner_out_valid	<= buf1_full;
+
 	input_ready		<= inner_in_ready;
 	output_valid	<= inner_out_valid;
 	output_last		<= buf1_last;
@@ -74,10 +83,10 @@ begin
 		buf1_full_next(i) <= '0' when buf1_full(i) = '0' or (inner_out_valid(i) = '1' and output_ready(i) = '1') else '1';
 	end generate;
 	
-	seq: process(clk, rst)
+	seq: process(clk, inner_reset)
 	begin
 		if rising_edge(clk) then
-			if rst = '1' then
+			if inner_reset = '1' then
 				buf0_full <= '0';
 				buf1_full <= (others => '0');
 				buf0 	  <= (others => '0');

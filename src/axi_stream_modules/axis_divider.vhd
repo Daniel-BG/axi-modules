@@ -84,7 +84,15 @@ architecture Behavioral of AXIS_DIVIDER is
     signal dividend_bitcnt: natural range 0 to INNER_WIDTH;
     signal divisor_bitcnt: natural range 0 to INNER_WIDTH;
 
+	--inner signals
+	signal inner_reset			: std_logic;
 begin
+
+	reset_replicator: entity work.reset_replicator
+		port map (
+			clk => clk, rst => rst,
+			rst_out => inner_reset
+		);
 
 
 	joint_signals: entity work.AXIS_SYNCHRONIZER_2
@@ -95,7 +103,7 @@ begin
 			LAST_POLICY => LAST_POLICY
 		)
 		port map (
-			clk => clk, rst => rst,
+			clk => clk, rst => inner_reset,
 			input_0_valid => dividend_valid,
 			input_0_ready => dividend_ready,
 			input_0_data  => dividend_data,
@@ -115,7 +123,7 @@ begin
 	seq: process(clk)
 	begin
 		if rising_edge(clk) then
-			if rst = '1' then
+			if inner_reset = '1' then
 				state_curr   <= IDLE;
 				dividend_buf <= (others => '0');
 				divisor_buf  <= (others => '0');

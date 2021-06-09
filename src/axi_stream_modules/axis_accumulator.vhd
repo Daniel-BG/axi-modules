@@ -57,7 +57,16 @@ architecture Behavioral of AXIS_ACCUMULATOR is
 	
 	constant ACCUMULATOR_WIDTH: integer := DATA_WIDTH + MAX_COUNT_LOG;
 	signal accumulator, accumulator_next, accumulator_plus_input: std_logic_vector(ACCUMULATOR_WIDTH - 1 downto 0);
+
+	--inner signals
+	signal inner_reset			: std_logic;
 begin
+
+	reset_replicator: entity work.reset_replicator
+		port map (
+			clk => clk, rst => rst,
+			rst_out => inner_reset
+		);
 
 	assert MAX_COUNT_LOG>= 2 report "Max count should be greater or equal than 2" severity error; 
 
@@ -68,10 +77,10 @@ begin
 		accumulator_plus_input <= std_logic_vector(unsigned(accumulator) + resize(unsigned(input_data), ACCUMULATOR_WIDTH));
 	end generate;
 	
-	seq: process(clk, rst)
+	seq: process(clk, inner_reset)
 	begin
 		if rising_edge(clk) then
-			if rst = '1' then
+			if inner_reset = '1' then
 				acc_state_curr <= READING;
 				accumulator <= (others => '0');
 				last_buf <= '0';

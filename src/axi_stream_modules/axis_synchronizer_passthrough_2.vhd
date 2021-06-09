@@ -64,10 +64,19 @@ architecture Behavioral of AXIS_SYNCHRONIZER_PASSTHROUGH_2 is
 	
 	signal input_0_ready_in, input_1_ready_in: std_logic;
 	signal output_valid_in: std_logic;
+	
+	--inner signals
+	signal inner_reset			: std_logic;
 begin
 
-	input_0_ready_in <= '1' when rst = '0' and (buf_0_full = '0' or (output_ready = '1' and buf_1_full = '1')) else '0';
-	input_1_ready_in <= '1' when rst = '0' and (buf_1_full = '0' or (output_ready = '1' and buf_0_full = '1')) else '0';
+	reset_replicator: entity work.reset_replicator
+		port map (
+			clk => clk, rst => rst,
+			rst_out => inner_reset
+		);
+
+	input_0_ready_in <= '1' when inner_reset = '0' and (buf_0_full = '0' or (output_ready = '1' and buf_1_full = '1')) else '0';
+	input_1_ready_in <= '1' when inner_reset = '0' and (buf_1_full = '0' or (output_ready = '1' and buf_0_full = '1')) else '0';
 	input_0_ready <= input_0_ready_in;
 	input_1_ready <= input_1_ready_in;
 	
@@ -81,10 +90,10 @@ begin
 	output_user_0 <= buf_0_user;
 	output_user_1 <= buf_1_user;
 
-	seq: process(clk, rst) 
+	seq: process(clk, inner_reset) 
 	begin
 		if rising_edge(clk) then
-			if rst = '1' then
+			if inner_reset = '1' then
 				buf_0_full <= '0';
 				buf_1_full <= '0';
 				buf_0 <= (others => '0');

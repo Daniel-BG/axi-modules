@@ -48,14 +48,22 @@ architecture Behavioral of AXIS_SUBSTITUTER is
 	signal counter_saturating: std_logic;
 	signal counter_enable: std_logic;
 
+	--inner signals
+	signal inner_reset			: std_logic;
 begin
+
+	reset_replicator: entity work.reset_replicator
+		port map (
+			clk => clk, rst => rst,
+			rst_out => inner_reset
+		);
 
 	counter: entity work.COUNTER
 		Generic map (
 			COUNT => INVALID_TRANSACTIONS
 		)
 		Port map ( 
-			clk => clk, rst	=> rst,
+			clk => clk, rst	=> inner_reset,
 			enable		=> counter_enable,
 			saturating	=> counter_saturating
 		);
@@ -63,7 +71,7 @@ begin
 	seq: process(clk)
 	begin
 		if rising_edge(clk) then
-			if rst = '1' then
+			if inner_reset = '1' then
 				state_curr <= INVALID;
 			else
 				state_curr <= state_next;

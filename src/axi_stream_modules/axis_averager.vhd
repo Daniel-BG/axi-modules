@@ -82,7 +82,16 @@ architecture Behavioral of AXIS_AVERAGER is
 	signal divider_output_ready, divider_output_valid: std_logic;
 	signal divider_data: std_logic_vector(DATA_WIDTH + MAX_COUNT_LOG - 1 downto 0);
 	signal divider_last: std_logic;
+
+	--inner signals
+	signal inner_reset			: std_logic;
 begin
+
+	reset_replicator: entity work.reset_replicator
+		port map (
+			clk => clk, rst => rst,
+			rst_out => inner_reset
+		);
 
 	--need a splitter first
 	input_last_pt_stdlv <= input_last_pt & "";
@@ -92,7 +101,7 @@ begin
 			USER_WIDTH => 1
 		)
 		Port map (
-			clk => clk, rst => rst,
+			clk => clk, rst => inner_reset,
 			input_valid		=> input_valid,
 			input_data		=> input_data,
 			input_ready		=> input_ready,
@@ -118,7 +127,7 @@ begin
 			IS_SIGNED	=> IS_SIGNED
 		)
 		Port map (
-			clk => clk, rst => rst,
+			clk => clk, rst => inner_reset,
 			input_data => input_0_data,
 			input_valid => input_0_valid,
 			input_ready	=> input_0_ready,
@@ -137,7 +146,7 @@ begin
 			IS_SIGNED  => false
 		)
 		Port map (
-			clk => clk, rst => rst,
+			clk => clk, rst => inner_reset,
 			input_data  => "1",
 			input_valid => input_1_valid,
 			input_ready	=> input_1_ready,
@@ -155,7 +164,7 @@ begin
 			LAST_POLICY => PASS_ZERO
 		)
 		Port map (
-			clk => clk, rst => rst,
+			clk => clk, rst => inner_reset,
 			--to input axi port
 			input_0_valid => acc_valid,
 			input_0_ready => acc_ready,
@@ -175,7 +184,7 @@ begin
 	seq : process (clk)
 	begin
 		if rising_edge(clk) then
-			if rst = '1' then
+			if inner_reset = '1' then
 				state_curr <= IDLE;
 				synced_divisor_buf <= (others => '0');
 				synced_dividend_buf<= (others => '0');
@@ -248,7 +257,7 @@ begin
 			LAST_POLICY => PASS_ZERO
 		)
 		Port map (
-			clk => clk, rst => rst,
+			clk => clk, rst => inner_reset,
 			dividend_data	=> synced_dividend_buf,
 			dividend_ready	=> divider_input_ready,
 			dividend_valid	=> divider_input_valid,

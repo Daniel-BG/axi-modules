@@ -51,12 +51,20 @@ architecture Behavioral of axis_conditioned_retrieval is
 	signal saved_cond, saved_cond_next: std_logic;
 	signal saved_user, saved_user_next: std_logic_vector(USER_WIDTH - 1 downto 0);
 
+	--inner signals
+	signal inner_reset			: std_logic;
 begin
 
-	seq: process(clk, rst)
+	reset_replicator: entity work.reset_replicator
+		port map (
+			clk => clk, rst => rst,
+			rst_out => inner_reset
+		);
+
+	seq: process(clk, inner_reset)
 	begin
 		if rising_edge(clk) then
-			if rst = '1' then
+			if inner_reset = '1' then
 				state_curr <= RESET;
 				saved_cond <= '0';
 				saved_user <= (others => '0');

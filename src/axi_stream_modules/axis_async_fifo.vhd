@@ -91,15 +91,23 @@ architecture Behavioral of AXIS_ASYNC_FIFO is
 		return output;
 	end;
 
+	--inner signals
+	signal inner_reset			: std_logic;
 begin
+
+	reset_replicator: entity work.reset_replicator
+		port map (
+			clk => clk, rst => rst,
+			rst_out => inner_reset
+		);
 
 	----------------------------------------------------------------------------
 	--- WRITE LOGIC
 	----------------------------------------------------------------------------
 
-	out_ptr_cross_clock: process(axis_in_clk, rst)
+	out_ptr_cross_clock: process(axis_in_clk, inner_reset)
 	begin
-		if rst = '1' then
+		if inner_reset = '1' then
 			in_xout_gray <= (others => '0');
 			in_xout_meta_gray <= (others => '0');
 			in_xout_ptr <= (others => '0');
@@ -122,9 +130,9 @@ begin
 
 	in_addr <= in_ptr(FIFO_DEPTH_LOG - 1 downto 0);
 
-	assign_next_in_ptr: process(axis_in_clk, rst)
+	assign_next_in_ptr: process(axis_in_clk, inner_reset)
 	begin
-		if rst = '1' then
+		if inner_reset = '1' then
 			in_ptr <= (others => '0');
 			in_gray <= (others => '0');
 		else
@@ -141,9 +149,9 @@ begin
 	in_almost_full_next <= '1' when unsigned(in_ptr) - unsigned(in_xout_ptr) >= to_unsigned(ALMOST_FULL_THRESHOLD, FIFO_DEPTH_LOG + 1) else '0'; 
 	
 
-	assign_next_full: process(axis_in_clk, rst) 
+	assign_next_full: process(axis_in_clk, inner_reset) 
 	begin
-		if rst = '1' then
+		if inner_reset = '1' then
 			in_full <= '0';
 			in_almost_full <= '0';
 		else
@@ -172,9 +180,9 @@ begin
 	-- READ LOGIC
 	----------------------------------------------------------------------------
 
-	in_ptr_cross_clock: process(axis_out_clk, rst)
+	in_ptr_cross_clock: process(axis_out_clk, inner_reset)
 	begin
-		if rst = '1' then
+		if inner_reset = '1' then
 			out_xin_gray <= (others => '0');
 			out_xin_meta_gray <= (others => '0');
 			out_xin_ptr <= (others => '0');
@@ -195,9 +203,9 @@ begin
 
 	out_addr <= out_ptr(FIFO_DEPTH_LOG - 1 downto 0);
 
-	assign_next_out_ptr: process(axis_out_clk, rst)
+	assign_next_out_ptr: process(axis_out_clk, inner_reset)
 	begin
-		if rst = '1' then
+		if inner_reset = '1' then
 			out_ptr <= (others => '0');
 			out_gray <= (others => '0');
 		else
@@ -211,9 +219,9 @@ begin
 	out_empty_next <= '1' when out_gray_next = out_xin_gray else '0';
 	out_axis_out_almost_empty_next <= '1' when unsigned(out_xin_ptr) - unsigned(out_ptr) <= to_unsigned(ALMOST_EMPTY_THRESHOLD, FIFO_DEPTH_LOG + 1) else '0';
 
-	assign_next_empty: process(axis_out_clk, rst) 
+	assign_next_empty: process(axis_out_clk, inner_reset) 
 	begin
-		if rst = '1' then
+		if inner_reset = '1' then
 			out_empty <= '1';
 			out_axis_out_almost_empty <= '1';
 		else

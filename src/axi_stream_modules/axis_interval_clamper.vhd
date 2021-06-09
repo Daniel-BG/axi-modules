@@ -58,7 +58,16 @@ architecture Behavioral of AXIS_INTERVAL_CLAMPER is
 	signal op_enable: std_logic;
 	
 	signal result: std_logic_vector(DATA_WIDTH - 1 downto 0);
+
+	--inner signals
+	signal inner_reset			: std_logic;
 begin
+
+	reset_replicator: entity work.reset_replicator
+		port map (
+			clk => clk, rst => rst,
+			rst_out => inner_reset
+		);
 
 	op_enable <= '1' when output_valid_reg = '0' or output_ready = '1' else '0';
 
@@ -80,10 +89,10 @@ begin
 			input_data;
 	end generate;
 	
-	seq_update: process(clk, rst)
+	seq_update: process(clk, inner_reset)
 	begin
 		if rising_edge(clk) then
-			if rst = '1' then
+			if inner_reset = '1' then
 				output_valid_reg <= '0';
 				output_reg <= (others => '0');
 				output_last_reg <= '0';

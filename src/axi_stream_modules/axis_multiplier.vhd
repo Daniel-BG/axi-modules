@@ -68,7 +68,15 @@ architecture Behavioral of AXIS_MULTIPLIER is
 	
 	signal inner_mult_enable: std_logic;
 	
+	--inner signals
+	signal inner_reset			: std_logic;
 begin
+
+	reset_replicator: entity work.reset_replicator
+		port map (
+			clk => clk, rst => rst,
+			rst_out => inner_reset
+		);
 
 	data_joiner: entity work.AXIS_SYNCHRONIZER_2
 		generic map (
@@ -79,7 +87,7 @@ begin
 			USER_POLICY  => USER_POLICY
 		)
 		port map (
-			clk => clk, rst => rst,
+			clk => clk, rst => inner_reset,
 			input_0_valid => input_0_valid,
 			input_0_ready => input_0_ready,
 			input_0_data  => input_0_data,
@@ -105,10 +113,10 @@ begin
 		else '0';
 	joint_ready <= inner_mult_enable;
 	
-	seq: process(clk, rst) 
+	seq: process(clk, inner_reset) 
 	begin
 		if rising_edge(clk) then
-			if rst = '1' then
+			if inner_reset = '1' then
 				stage_occ <= (others => '0');
 			else
 				if inner_mult_enable = '1' then

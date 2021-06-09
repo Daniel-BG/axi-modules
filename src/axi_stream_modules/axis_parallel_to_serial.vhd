@@ -55,12 +55,22 @@ architecture axis_parallel_to_serial_arc of axis_parallel_to_serial is
 	signal input_last_buf, input_last_buf_next: std_logic;
 	signal input_user_buf, input_user_buf_next: std_logic_vector(USER_WIDTH - 1 downto 0);
 	signal input_data_buf_occ, input_data_buf_occ_next: std_logic_vector(PARALLEL_SIGNAL_COUNT - 1 downto 0);
+
+
+	--inner signals
+	signal inner_reset			: std_logic;
 begin
 
-	seq: process(clk, rst)
+	reset_replicator: entity work.reset_replicator
+		port map (
+			clk => clk, rst => rst,
+			rst_out => inner_reset
+		);
+
+	seq: process(clk, inner_reset)
 	begin
 		if rising_edge(clk) then
-			if rst = '1' then
+			if inner_reset = '1' then
 				state_curr <= IDLE;
 				input_data_buf <= (others => '0');
 				input_last_buf <= '0';

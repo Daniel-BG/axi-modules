@@ -61,7 +61,16 @@ architecture Behavioral of axis_fifo_latched is
 	signal latched_valid: STD_LOGIC;
 	signal latched_last	: STD_LOGIC;
 	signal latched_user	: STD_LOGIC_VECTOR(USER_WIDTH - 1 downto 0);
+
+	--inner signals
+	signal inner_reset			: std_logic;
 begin
+
+	reset_replicator: entity work.reset_replicator
+		port map (
+			clk => clk, rst => rst,
+			rst_out => inner_reset
+		);
 
 	inner_fifo: entity work.AXIS_FIFO_SWRAP
 		Generic map (
@@ -71,7 +80,7 @@ begin
 		)
 		Port map ( 
 			clk		=> clk,
-			rst		=> rst,
+			rst		=> inner_reset,
 			--input axi port
 			input_valid		=> input_valid,
 			input_ready		=> input_ready,
@@ -93,7 +102,7 @@ begin
 		)
 		Port map ( 
 			clk		=> clk,
-			rst		=> rst,
+			rst		=> inner_reset,
 			input_valid		=> latched_valid,
 			input_ready		=> latched_ready,
 			input_data		=> latched_data,

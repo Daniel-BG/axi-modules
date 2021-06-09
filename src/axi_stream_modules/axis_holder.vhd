@@ -45,12 +45,21 @@ architecture Behavioral of AXIS_HOLDER is
 	signal state_curr, state_next: state_holder_t;
 
 	signal buf, buf_next: std_logic_vector(DATA_WIDTH - 1 downto 0);
+
+	--inner signals
+	signal inner_reset			: std_logic;
 begin
+
+	reset_replicator: entity work.reset_replicator
+		port map (
+			clk => clk, rst => rst,
+			rst_out => inner_reset
+		);
 
 	seq: process(clk)
 	begin
 		if rising_edge(clk) then
-			if rst = '1' then
+			if inner_reset = '1' then
 				state_curr <= EMPTY;
 				buf <= (others => '0');
 			else

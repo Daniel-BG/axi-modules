@@ -62,7 +62,16 @@ architecture Behavioral of axis_dotprod is
 	signal axis_mult_out_ready, axis_mult_out_valid, axis_mult_out_last: std_logic;
 	signal axis_mult_out_user: std_logic_vector(USER_WIDTH - 1 downto 0);
 	
+	--inner signals
+	signal inner_reset			: std_logic;
 begin
+
+	reset_replicator: entity work.reset_replicator
+		port map (
+			clk => clk, rst => rst,
+			rst_out => inner_reset
+		);
+
 	axis_input_a_ready <= axis_input_a_ready_buf;
 	axis_input_b_ready <= axis_input_b_ready_buf;
 	--first multiplier
@@ -78,7 +87,7 @@ begin
 			STAGES_AFTER_SYNC => 3
 		)
 		port map(
-			clk => clk, rst => rst,
+			clk => clk, rst => inner_reset,
 			input_0_data	=> axis_input_a_d(INPUT_A_DATA_WIDTH*(0+1) - 1 downto INPUT_A_DATA_WIDTH*0),
 			input_0_valid	=> axis_input_a_valid,
 			input_0_ready	=> axis_input_a_ready_buf,
@@ -114,7 +123,7 @@ begin
 				STAGES_AFTER_SYNC => 3
 			)
 			port map(
-				clk => clk, rst => rst,
+				clk => clk, rst => inner_reset,
 				input_0_data	=> axis_input_a_d(INPUT_A_DATA_WIDTH*(i+1) - 1 downto INPUT_A_DATA_WIDTH*i),
 				input_0_valid	=> transaction_at_a,
 				input_0_ready	=> open,
@@ -152,7 +161,7 @@ begin
 			USER_WIDTH   => USER_WIDTH
 		)
 		port map ( 
-			clk => clk, rst => rst,
+			clk => clk, rst => inner_reset,
 			input_data	=> axis_mult_out_red,
 			input_ready => axis_mult_out_ready,
 			input_valid => axis_mult_out_valid,
