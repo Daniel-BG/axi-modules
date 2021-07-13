@@ -249,4 +249,14 @@ begin
 	end process;
 
 
+	--pragma synthesis_off
+--	report_occupancy : process
+--	begin
+--		wait for 10000 ns;
+--		report "Occupancy " & integer'image(occupancy) & "/" & integer'image(FIFO_DEPTH) severity note;
+--	end process ; -- y
+
+	--pragma synthesis_on
+
+
 end Behavioral;
