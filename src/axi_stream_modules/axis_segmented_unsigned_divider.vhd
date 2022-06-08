@@ -26,8 +26,8 @@ use work.am_data_types.all;
 
 entity axis_segmented_unsigned_divider is
 	generic (
-		DIVIDEND_WIDTH: integer := 24;
-		DIVISOR_WIDTH: integer := 12;
+		DIVIDEND_WIDTH: integer := 32;
+		DIVISOR_WIDTH: integer := 16;
 		LAST_POLICY: am_last_policy_t := PASS_ZERO;
 		USER_WIDTH: integer := 1;
 		USER_POLICY: am_last_policy_t := PASS_ZERO
